@@ -1,8 +1,179 @@
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.GridPane?>
+<?xml version="1.0" encoding="UTF-8"?>
 
+<?import View.MazeDisplayer?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<GridPane fx:controller="View.MyViewController"
-          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
-</GridPane>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <bottom>
+      <HBox prefHeight="13.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Ready" wrappingWidth="110.98307228088379">
+               <HBox.margin>
+                  <Insets bottom="2.0" left="4.0" />
+               </HBox.margin>
+            </Text>
+            <ProgressBar prefHeight="16.0" prefWidth="467.0" progress="0.0" />
+         </children>
+      </HBox>
+   </bottom>
+   <top>
+      <MenuBar prefHeight="27.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="New" />
+                  <MenuItem mnemonicParsing="false" text="Save" />
+                  <MenuItem mnemonicParsing="false" text="Load" />
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="Options">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Properties" />
+                  <Menu mnemonicParsing="false" text="Generation Algorithm">
+                    <items>
+                        <CheckMenuItem mnemonicParsing="false" text="BestFirstSearch" />
+                        <CheckMenuItem mnemonicParsing="false" text="BreadthFirstSearch" />
+                        <CheckMenuItem mnemonicParsing="false" text="DepthFirstSearch" />
+                        <CheckMenuItem mnemonicParsing="false" text="AStar" />
+                    </items>
+                  </Menu>
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Exit">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Save And Exit" />
+                  <MenuItem mnemonicParsing="false" text="Exit Without Saving" />
+              </items>
+            </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Instructions" />
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="About">
+              <items>
+                <MenuItem mnemonicParsing="false" text="About" />
+              </items>
+            </Menu>
+        </menus>
+         <padding>
+            <Insets left="2.0" top="2.0" />
+         </padding>
+      </MenuBar>
+   </top>
+   <left>
+      <VBox prefHeight="680.0" prefWidth="168.0" BorderPane.alignment="CENTER">
+         <children>
+            <GridPane prefHeight="213.0" prefWidth="164.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="102.0" minWidth="10.0" prefWidth="81.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="88.0" minWidth="10.0" prefWidth="81.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="39.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="78.0" minHeight="10.0" prefHeight="24.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="99.0" minHeight="10.0" prefHeight="65.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <TextField GridPane.columnIndex="1" />
+                  <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Rows:">
+                     <GridPane.margin>
+                        <Insets left="4.0" />
+                     </GridPane.margin>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Columns:" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="4.0" />
+                     </GridPane.margin>
+                  </Text>
+                  <Button mnemonicParsing="false" prefHeight="36.0" prefWidth="142.0" text="New Maze" GridPane.columnSpan="2" GridPane.rowIndex="3">
+                     <GridPane.margin>
+                        <Insets left="7.0" />
+                     </GridPane.margin>
+                  </Button>
+                  <CheckBox mnemonicParsing="false" selected="true" text="Bind Proportions" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets left="15.0" />
+                     </GridPane.margin>
+                  </CheckBox>
+               </children>
+               <padding>
+                  <Insets top="10.0" />
+               </padding>
+            </GridPane>
+            <GridPane prefHeight="131.0" prefWidth="132.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="33.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="25.0" minHeight="10.0" prefHeight="17.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="135.0" text="Flash Solution" GridPane.columnSpan="2147483647">
+                     <GridPane.margin>
+                        <Insets left="10.0" />
+                     </GridPane.margin>
+                  </Button>
+                  <ToggleButton mnemonicParsing="false" prefHeight="30.0" prefWidth="135.0" text="Show Solution" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="10.0" />
+                     </GridPane.margin>
+                  </ToggleButton>
+               </children>
+            </GridPane>
+            <GridPane prefHeight="159.0" prefWidth="100.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Extra Options" textAlignment="CENTER" underline="true" wrappingWidth="136.9830665588379" GridPane.columnSpan="2147483647" />
+               </children>
+            </GridPane>
+         </children>
+         <padding>
+            <Insets left="4.0" />
+         </padding>
+      </VBox>
+   </left>
+   <center>
+      <Pane BorderPane.alignment="CENTER" >
+          <children>
+              <MazeDisplayer fx:id="mazeDisplayer" /> /*height="600.0" width="600.0"
+                             imageFileNameCharacter="resources/Images/character1.jpg"
+                             imageFileNameWall="resources/Images/wall3.jpg"*/ /> //TODO add attributes
+          </children>
+          <padding>
+              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+          </padding>
+      </Pane>
+   </center>
+</BorderPane>
