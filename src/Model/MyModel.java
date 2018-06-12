@@ -53,7 +53,7 @@ public class MyModel  extends Observable implements IModel {
                         InputStream is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
                         byte[] decompressedMaze = new byte[1000];
                         is.read(decompressedMaze);
-                        Maze maze = new Maze(decompressedMaze);
+                        maze = new Maze(decompressedMaze);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
