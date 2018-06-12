@@ -27,8 +27,21 @@ public class MyViewController implements IView{
     }
 
     @Override
-    public void update(Observable o, Object arg) {
+    public void displayMaze(int[][] maze) {
+        mazeDisplayer.setMaze(maze);
+        int characterPositionRow = viewModel.getCharacterPositionRow();
+        int characterPositionColumn = viewModel.getCharacterPositionColumn();
+        mazeDisplayer.setCharacterPosition(characterPositionRow, characterPositionColumn);
+        this.characterPositionRow.set(characterPositionRow + "");
+        this.characterPositionColumn.set(characterPositionColumn + "");
+    }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        if (o == viewModel) {
+            displayMaze(viewModel.getMaze());
+            btn_generateMaze.setDisable(false);
+        }
     }
 
     @Override
