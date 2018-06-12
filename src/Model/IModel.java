@@ -1,5 +1,6 @@
 package Model;
 
+import algorithms.mazeGenerators.Maze;
 import javafx.scene.input.KeyCode;
 
 public interface IModel {
@@ -8,4 +9,7 @@ public interface IModel {
     int getCharacterPositionRow();
     int getCharacterPositionColumn();
     void moveCharacter (KeyCode movement);
+    void solve (Maze maze);
+    void changeGenerateMazeSettings();
+    void changeSolveMazeSettings();
 }
