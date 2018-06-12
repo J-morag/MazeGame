@@ -1,4 +1,10 @@
 package View;
 
-public interface IView {
+import java.util.Observer;
+
+interface IView extends Observer{
+    void newGame();
+
+
+
 }
