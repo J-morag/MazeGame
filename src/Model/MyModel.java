@@ -2,7 +2,6 @@ package Model;
 
 import Client.Client;
 import IO.MyDecompressorInputStream;
-import ATPProjectJAR;
 import Server.Server;
 import Server.ServerStrategyGenerateMaze;
 import Server.ServerStrategySolveSearchProblem;
@@ -19,7 +18,7 @@ public class MyModel  extends Observable implements IModel {
     Server generateServer;
     Server solveServer;
     ServerStrategyGenerateMaze strategyGenerateServer;
-    Server.ServerStrategySolveSearchProblem strategySolveServer;
+//    Server.ServerStrategySolveSearchProblem strategySolveServer;
     private Maze maze;
     private int charachterPositionRow;
     private int charachterPositionColumn;
@@ -29,43 +28,43 @@ public class MyModel  extends Observable implements IModel {
         charachterPositionRow = 0;
         charachterPositionColumn = 0;
 
-        strategyGenerateServer = new ServerStrategyGenerateMaze();
-        generateServer = new Server(5400, 7000,strategyGenerateServer);
-        strategySolveServer = new ServerStrategySolveSearchProblem();
-        generateServer = new Server(5401, 7000,strategySolveServer);
-
-        generateServer.start();
-        solveServer.start();
+//        strategyGenerateServer = new ServerStrategyGenerateMaze();
+//        generateServer = new Server(5400, 7000,strategyGenerateServer);
+////        strategySolveServer = new ServerStrategySolveSearchProblem();
+////        generateServer = new Server(5401, 7000,strategySolveServer);
+//
+//        generateServer.start();
+//        solveServer.start();
     }
 
     @Override
     public void generateMaze(int rows, int columns) {
-        try {
-            Client client = new Client(InetAddress.getLocalHost(), 5400, new Client.IClientStrategy() {
-                public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
-                    try {
-                        ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
-                        ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
-                        toServer.flush();
-                        int[] mazeDimensions = new int[]{rows, columns};
-                        toServer.writeObject(mazeDimensions);
-                        toServer.flush();
-                        byte[] compressedMaze = (byte[])fromServer.readObject();
-                        InputStream is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
-                        byte[] decompressedMaze = new byte[1000];
-                        is.read(decompressedMaze);
-                        maze = new Maze(decompressedMaze);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            client.communicateWithServer();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        setChanged();
-        notifyObservers();
+//        try {
+//            Client client = new Client(InetAddress.getLocalHost(), 5400, new Client.IClientStrategy() {
+//                public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
+//                    try {
+//                        ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
+//                        ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
+//                        toServer.flush();
+//                        int[] mazeDimensions = new int[]{rows, columns};
+//                        toServer.writeObject(mazeDimensions);
+//                        toServer.flush();
+//                        byte[] compressedMaze = (byte[])fromServer.readObject();
+//                        InputStream is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
+//                        byte[] decompressedMaze = new byte[1000];
+//                        is.read(decompressedMaze);
+//                        maze = new Maze(decompressedMaze);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//            client.communicateWithServer();
+//        } catch (UnknownHostException e) {
+//            e.printStackTrace();
+//        }
+//        setChanged();
+//        notifyObservers();
     }
 
     @Override
