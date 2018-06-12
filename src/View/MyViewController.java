@@ -5,6 +5,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,7 +29,6 @@ public class MyViewController implements IView{
     public javafx.scene.control.Label lbl_rowsNum;
     public javafx.scene.control.Label lbl_columnsNum;
     public javafx.scene.control.Button btn_newMaze;
-    public javafx.scene.control.ChoiceBox choiceBox_generationAlgo;
 
     public void setViewModel(MyViewModel viewModel) {
         this.viewModel = viewModel;
@@ -37,7 +38,6 @@ public class MyViewController implements IView{
     private void bindProperties(MyViewModel viewModel) {
         lbl_rowsNum.textProperty().bind(viewModel.characterPositionRow);
         lbl_columnsNum.textProperty().bind(viewModel.characterPositionColumn);
-        choiceBox_generationAlgo.accessibleTextProperty().bind(viewModel.mazeGenerationAlgorithmConfig);
     }
 
     @Override
@@ -113,34 +113,32 @@ public class MyViewController implements IView{
         }
     }
 
-    public void setListeners(){
+    public void PropertiesStage(ActionEvent actionEvent) {
+        try {
+            Stage stage = new Stage();
+            stage.setTitle("Properties");
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            Parent root = fxmlLoader.load(getClass().getResource("Properties.fxml").openStream());
+            Scene scene = new Scene(root, 350, 400);
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL); //Lock the window until it closes
 
+            PropertiesController propWindow = fxmlLoader.getController();
+            propWindow.prepareToShow();
+
+            stage.show();
+        } catch (Exception e) {
+
+        }
     }
+
 
     @Override
     public void newGame() {
         displayMaze(viewModel.getMaze()); //TODO replace with proper maze generation
     }
 
-//    public void About(ActionEvent actionEvent) {
-//        try {
-//            Stage stage = new Stage();
-//            stage.setTitle("AboutController");
-//            FXMLLoader fxmlLoader = new FXMLLoader();
-//            Parent root = fxmlLoader.load(getClass().getResource("About.fxml").openStream());
-//            Scene scene = new Scene(root, 400, 350);
-//            stage.setScene(scene);
-//            stage.initModality(Modality.APPLICATION_MODAL); //Lock the window until it closes
-//            stage.show();
-//        } catch (Exception e) {
-//
-//        }
-//    }
 
-    public void generationConfigurationChange() {
-
-
-    }
 
     @Override
     public void solve() {
@@ -149,6 +147,8 @@ public class MyViewController implements IView{
 
     @Override
     public void exit() {
+        //TODO close servers
+        //TODO other stuff
 
     }
 

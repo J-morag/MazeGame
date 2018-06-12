@@ -34,7 +34,7 @@ public class MyModel  extends Observable implements IModel {
         strategyGenerateServer = new ServerStrategyGenerateMaze();
         generateServer = new Server(5400, 7000,strategyGenerateServer);
         strategySolveServer = new ServerStrategySolveSearchProblem();
-        generateServer = new Server(5401, 7000,strategySolveServer);
+        solveServer = new Server(5401, 7000,strategySolveServer);
 
         generateServer.start();
         solveServer.start();
@@ -137,13 +137,7 @@ public class MyModel  extends Observable implements IModel {
         return mazeSolution;
     }
 
-    @Override
-    public String getConfiguration(String prop) {
-        if(prop.equals("generatorClass")){
-            return Server.Configurations.generatorClass.getCurrValue().toString();
-        }
-        else return Server.Configurations.searchAlgorithm.getCurrValue().toString();
-    }
+
 
     @Override
     public void solutionOn2DArr() {
