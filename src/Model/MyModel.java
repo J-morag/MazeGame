@@ -139,13 +139,7 @@ public class MyModel  extends Observable implements IModel {
         return mazeSolution;
     }
 
-    @Override
-    public String getConfiguration(String prop) {
-        if(prop.equals("generatorClass")){
-            return Server.Configurations.generatorClass.getCurrValue().toString();
-        }
-        else return Server.Configurations.searchAlgorithm.getCurrValue().toString();
-    }
+
 
     /**
      * Creates a new map (with sizes of the maze), and put '1' in the position of each step in the solution.

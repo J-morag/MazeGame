@@ -1,6 +1,7 @@
 package ViewModel;
 
 import Model.IModel;
+import Model.MyModel;
 import algorithms.mazeGenerators.MyMazeGenerator;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -18,7 +19,8 @@ public class MyViewModel extends Observable implements Observer{
 
     public StringProperty characterPositionRow = new SimpleStringProperty("0"); //For Binding
     public StringProperty characterPositionColumn = new SimpleStringProperty("0"); //For Binding
-    public StringProperty mazeGenerationAlgorithmConfig = new SimpleStringProperty("MyMazeGenerator");
+//    public StringProperty mazeGenerationAlgorithmConfig = new SimpleStringProperty("MyMazeGenerator");
+
 
     public MyViewModel(IModel model){
         this.model = model;
@@ -56,4 +58,7 @@ public class MyViewModel extends Observable implements Observer{
         return characterPositionColumnIndex;
     }
 
+    public static String getConfiguration(String prop) {
+        return IModel.getConfiguration(prop);
+    }
 }
