@@ -12,11 +12,10 @@ public interface IModel {
     int getCharacterPositionColumn();
     void moveCharacter (KeyCode movement);
     void solve ();
-    void solutionOn2DArr();
+    int[][] solutionOnMap();
     void save(String pathFile);
     void load(String pathFile);
     void stopServers();
     void changeConfiguration(String prop, String value);
     String getConfiguration (String prop);
-    void exit();
 }

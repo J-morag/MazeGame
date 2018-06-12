@@ -34,7 +34,7 @@ public class MyModel  extends Observable implements IModel {
         strategyGenerateServer = new ServerStrategyGenerateMaze();
         generateServer = new Server(5400, 7000,strategyGenerateServer);
         strategySolveServer = new ServerStrategySolveSearchProblem();
-        generateServer = new Server(5401, 7000,strategySolveServer);
+        solveServer = new Server(5401, 7000,strategySolveServer);
 
         generateServer.start();
         solveServer.start();
@@ -42,6 +42,8 @@ public class MyModel  extends Observable implements IModel {
 
     @Override
     public void generateMaze(int rows, int columns) {
+        if(rows < 5 || columns < 5)
+            throw new IndexOutOfBoundsException();
         try {
             Client client = new Client(InetAddress.getLocalHost(), 5400, new IClientStrategy() {
                 public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
@@ -145,9 +147,20 @@ public class MyModel  extends Observable implements IModel {
         else return Server.Configurations.searchAlgorithm.getCurrValue().toString();
     }
 
+    /**
+     * Creates a new map (with sizes of the maze), and put '1' in the position of each step in the solution.
+     */
     @Override
-    public void solutionOn2DArr() {
-
+    public int[][] solutionOnMap() {
+        ArrayList<AState> mazeSolutionPath = mazeSolution.getSolutionPath();
+        int[][] map = new int[maze.getMazeMap().length][(maze.getMazeMap())[0].length];
+        for (AState step:mazeSolutionPath) {
+            String[] stepStrArr = step.toString().split(",");
+            int row = Integer.parseInt(stepStrArr[0]);
+            int column = Integer.parseInt(stepStrArr[1]);
+            map[row][column] = 1;
+        }
+        return map;
     }
 
     @Override
@@ -193,10 +206,5 @@ public class MyModel  extends Observable implements IModel {
     @Override
     public void changeConfiguration(String prop, String value) {
         Server.Configurations.setProperty(prop, value);
-    }
-
-    @Override
-    public void exit() {
-
     }
 }
