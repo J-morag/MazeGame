@@ -1,10 +1,8 @@
 package Model;
 
-import Client.Client;
+import Client.*;
 import IO.MyDecompressorInputStream;
-import Server.Server;
-import Server.ServerStrategyGenerateMaze;
-import Server.ServerStrategySolveSearchProblem;
+import Server.*;
 import algorithms.mazeGenerators.Maze;
 import algorithms.search.Solution;
 import javafx.scene.input.KeyCode;
@@ -19,7 +17,7 @@ public class MyModel  extends Observable implements IModel {
     Server generateServer;
     Server solveServer;
     ServerStrategyGenerateMaze strategyGenerateServer;
-    Server.ServerStrategySolveSearchProblem strategySolveServer;
+    ServerStrategySolveSearchProblem strategySolveServer;
     private Maze maze;
     private int charachterPositionRow;
     private int charachterPositionColumn;
@@ -43,7 +41,7 @@ public class MyModel  extends Observable implements IModel {
     @Override
     public void generateMaze(int rows, int columns) {
         try {
-            Client client = new Client(InetAddress.getLocalHost(), 5400, new Client.IClientStrategy() {
+            Client client = new Client(InetAddress.getLocalHost(), 5400, new IClientStrategy() {
                 public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
                     try {
                         ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
@@ -110,7 +108,7 @@ public class MyModel  extends Observable implements IModel {
     @Override
     public void solve() {
         try {
-            Client client = new Client(InetAddress.getLocalHost(), 5401, new Client.IClientStrategy() {
+            Client client = new Client(InetAddress.getLocalHost(), 5401, new IClientStrategy() {
                 public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
                     try {
                         ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
