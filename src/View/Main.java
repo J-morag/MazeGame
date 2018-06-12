@@ -3,11 +3,17 @@ package View;
 import Model.MyModel;
 import ViewModel.MyViewModel;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+
+import java.util.Optional;
 
 public class Main extends Application {
 
@@ -17,13 +23,38 @@ public class Main extends Application {
         MyViewModel viewModel = new MyViewModel(model);
         model.addObserver(viewModel);
 
-        Parent root = FXMLLoader.load(getClass().getResource("../View/MyView.fxml"));
         primaryStage.setTitle("MazeGame");
 //        primaryStage.getIcons().add(new Image(getClass().getResource("resources/Images/icon1.jpg").toString()));
-        primaryStage.setScene(new Scene(root, 1000, 650));
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        Parent root = fxmlLoader.load(getClass().getResource("MyView.fxml").openStream());
+        Scene scene = new Scene(root, 1000, 650);
+        primaryStage.setScene(scene);
         primaryStage.setMinHeight(440);
         primaryStage.setMinWidth(600);
+        //--------------
+        MyViewController view = fxmlLoader.getController();
+        view.setResizeEvent(scene);
+        view.setViewModel(viewModel);
+        viewModel.addObserver(view);
+        //--------------
+        SetStageCloseEvent(primaryStage);
         primaryStage.show();
+    }
+
+    private void SetStageCloseEvent(Stage primaryStage) {
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent windowEvent) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK){
+                    // ... user chose OK
+                    // Close program
+                } else {
+                    // ... user chose CANCEL or closed the dialog
+                    windowEvent.consume();
+                }
+            }
+        });
     }
 
 
