@@ -4,12 +4,14 @@ import Client.*;
 import IO.MyDecompressorInputStream;
 import Server.*;
 import algorithms.mazeGenerators.Maze;
+import algorithms.search.AState;
 import algorithms.search.Solution;
 import javafx.scene.input.KeyCode;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Observable;
 
 public class MyModel  extends Observable implements IModel {
@@ -19,14 +21,14 @@ public class MyModel  extends Observable implements IModel {
     ServerStrategyGenerateMaze strategyGenerateServer;
     ServerStrategySolveSearchProblem strategySolveServer;
     private Maze maze;
-    private int charachterPositionRow;
-    private int charachterPositionColumn;
+    private int characterPositionRow;
+    private int characterPositionColumn;
     private Solution mazeSolution;
 
     public MyModel() {
         maze = new Maze();
-        charachterPositionRow = maze.getStartPosition().getRowIndex();
-        charachterPositionColumn = maze.getStartPosition().getColumnIndex();
+        characterPositionRow = maze.getStartPosition().getRowIndex();
+        characterPositionColumn = maze.getStartPosition().getColumnIndex();
         mazeSolution = new Solution();
 
         strategyGenerateServer = new ServerStrategyGenerateMaze();
@@ -55,8 +57,8 @@ public class MyModel  extends Observable implements IModel {
                         byte[] decompressedMaze = new byte[rows*columns + 24];
                         is.read(decompressedMaze);
                         maze = new Maze(decompressedMaze);
-                        charachterPositionRow = maze.getStartPosition().getRowIndex();
-                        charachterPositionColumn = maze.getStartPosition().getColumnIndex();
+                        characterPositionRow = maze.getStartPosition().getRowIndex();
+                        characterPositionColumn = maze.getStartPosition().getColumnIndex();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -77,28 +79,28 @@ public class MyModel  extends Observable implements IModel {
 
     @Override
     public int getCharacterPositionRow() {
-        return charachterPositionRow;
+        return characterPositionRow;
     }
 
     @Override
     public int getCharacterPositionColumn() {
-        return charachterPositionColumn;
+        return characterPositionColumn;
     }
 
     @Override
     public void moveCharacter(KeyCode movement) {
         switch (movement){
             case UP:
-                charachterPositionRow--;
+                characterPositionRow--;
                 break;
             case DOWN:
-                charachterPositionRow++;
+                characterPositionRow++;
                 break;
             case RIGHT:
-                charachterPositionColumn++;
+                characterPositionColumn++;
                 break;
             case LEFT:
-                charachterPositionColumn--;
+                characterPositionColumn--;
                 break;
         }
         setChanged();
@@ -117,8 +119,8 @@ public class MyModel  extends Observable implements IModel {
                         toServer.writeObject(maze);
                         toServer.flush();
                         mazeSolution = (Solution)fromServer.readObject();
-                        charachterPositionRow = maze.getGoalPosition().getRowIndex();
-                        charachterPositionColumn = maze.getGoalPosition().getColumnIndex();
+                        characterPositionRow = maze.getGoalPosition().getRowIndex();
+                        characterPositionColumn = maze.getGoalPosition().getColumnIndex();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -126,6 +128,58 @@ public class MyModel  extends Observable implements IModel {
             });
             client.communicateWithServer();
         } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Solution getSolution() {
+        return mazeSolution;
+    }
+
+    @Override
+    public String getConfiguration(String prop) {
+        if(prop.equals("generatorClass")){
+            return Server.Configurations.generatorClass.getCurrValue().toString();
+        }
+        else return Server.Configurations.searchAlgorithm.getCurrValue().toString();
+    }
+
+    @Override
+    public void solutionOn2DArr() {
+
+    }
+
+    @Override
+    public void save(String pathFile) {
+        try {
+            FileOutputStream outFile = new FileOutputStream(pathFile);
+            ObjectOutputStream outFileObj = new ObjectOutputStream(outFile);
+            outFileObj.writeObject(maze);
+            outFile.flush();
+            outFileObj.flush();
+            outFile.close();
+            outFileObj.flush();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void load(String pathFile) {
+        try {
+            FileInputStream inputFile = new FileInputStream(pathFile);
+            ObjectInputStream inFileObj = new ObjectInputStream(inputFile);
+            maze = (Maze) inFileObj.readObject();
+            characterPositionRow = maze.getStartPosition().getRowIndex();
+            characterPositionColumn = maze.getStartPosition().getColumnIndex();
+            inputFile.close();
+            inFileObj.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -143,5 +197,6 @@ public class MyModel  extends Observable implements IModel {
 
     @Override
     public void exit() {
+
     }
 }
