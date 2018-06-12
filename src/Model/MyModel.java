@@ -2,6 +2,7 @@ package Model;
 
 import Client.Client;
 import IO.MyDecompressorInputStream;
+import ATPProjectJAR;
 import Server.Server;
 import Server.ServerStrategyGenerateMaze;
 import Server.ServerStrategySolveSearchProblem;

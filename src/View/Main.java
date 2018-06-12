@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -11,7 +12,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("../View/MyView.fxml"));
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("MazeGame");
+//        primaryStage.getIcons().add(new Image(getClass().getResource("resources/Images/icon1.jpg").toString()));
         primaryStage.setScene(new Scene(root, 1000, 650));
         primaryStage.setMinHeight(440);
         primaryStage.setMinWidth(600);
