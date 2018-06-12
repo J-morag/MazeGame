@@ -2,11 +2,11 @@ package Model;
 
 import Client.Client;
 import IO.MyDecompressorInputStream;
-import ATPProjectJAR;
 import Server.Server;
 import Server.ServerStrategyGenerateMaze;
 import Server.ServerStrategySolveSearchProblem;
 import algorithms.mazeGenerators.Maze;
+import algorithms.search.Solution;
 import javafx.scene.input.KeyCode;
 
 import java.io.*;
@@ -23,11 +23,13 @@ public class MyModel  extends Observable implements IModel {
     private Maze maze;
     private int charachterPositionRow;
     private int charachterPositionColumn;
+    private Solution mazeSolution;
 
     public MyModel() {
         maze = new Maze();
-        charachterPositionRow = 0;
-        charachterPositionColumn = 0;
+        charachterPositionRow = maze.getStartPosition().getRowIndex();
+        charachterPositionColumn = maze.getStartPosition().getColumnIndex();
+        mazeSolution = new Solution();
 
         strategyGenerateServer = new ServerStrategyGenerateMaze();
         generateServer = new Server(5400, 7000,strategyGenerateServer);
@@ -52,9 +54,11 @@ public class MyModel  extends Observable implements IModel {
                         toServer.flush();
                         byte[] compressedMaze = (byte[])fromServer.readObject();
                         InputStream is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
-                        byte[] decompressedMaze = new byte[1000];
+                        byte[] decompressedMaze = new byte[rows*columns + 24];
                         is.read(decompressedMaze);
                         maze = new Maze(decompressedMaze);
+                        charachterPositionRow = maze.getStartPosition().getRowIndex();
+                        charachterPositionColumn = maze.getStartPosition().getColumnIndex();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -85,21 +89,61 @@ public class MyModel  extends Observable implements IModel {
 
     @Override
     public void moveCharacter(KeyCode movement) {
-
+        switch (movement){
+            case UP:
+                charachterPositionRow--;
+                break;
+            case DOWN:
+                charachterPositionRow++;
+                break;
+            case RIGHT:
+                charachterPositionColumn++;
+                break;
+            case LEFT:
+                charachterPositionColumn--;
+                break;
+        }
+        setChanged();
+        notifyObservers();
     }
 
     @Override
-    public void solve(Maze maze) {
-
+    public void solve() {
+        try {
+            Client client = new Client(InetAddress.getLocalHost(), 5401, new Client.IClientStrategy() {
+                public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
+                    try {
+                        ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
+                        ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
+                        toServer.flush();
+                        toServer.writeObject(maze);
+                        toServer.flush();
+                        mazeSolution = (Solution)fromServer.readObject();
+                        charachterPositionRow = maze.getGoalPosition().getRowIndex();
+                        charachterPositionColumn = maze.getGoalPosition().getColumnIndex();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            client.communicateWithServer();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void changeGenerateMazeSettings() {
-
+    public void stopServers() {
+        generateServer.stop();
+        solveServer.stop();
     }
 
     @Override
-    public void changeSolveMazeSettings() {
+    public void changeConfiguration(String prop, String value) {
+        Server.Configurations.setProperty(prop, value);
+    }
 
+    @Override
+    public void exit() {
     }
 }
