@@ -71,6 +71,7 @@ public class MyViewController implements IView{
             int rows = Integer.valueOf(txtfld_rowsNum.getText());
             int columns = Integer.valueOf(txtfld_columnsNum.getText());
             viewModel.generateMaze(rows, columns);
+            displayMaze(viewModel.getMaze());
             lbl_statusText.setText("Generating maze...");
         }
         catch(NumberFormatException e){

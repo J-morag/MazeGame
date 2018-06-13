@@ -21,6 +21,9 @@ public class MyViewModel extends Observable implements Observer{
     public StringProperty characterPositionColumn = new SimpleStringProperty("0"); //For Binding
 //    public StringProperty mazeGenerationAlgorithmConfig = new SimpleStringProperty("MyMazeGenerator");
 
+    public enum EventType{
+        MAZE, SOLUTION, MOVEMENT, INVALIDMOVEMENT, ERRORMESSAGE, MESSAGE
+    }
 
 
     public MyViewModel(IModel model){
@@ -29,7 +32,7 @@ public class MyViewModel extends Observable implements Observer{
 
     @Override
     public void update(Observable o, Object arg) {
-        if (o==model){
+        if (o==model && arg == EventType.MAZE){
             characterPositionRowIndex = model.getCharacterPositionRow();
             characterPositionRow.set(characterPositionRowIndex + "");
             characterPositionColumnIndex = model.getCharacterPositionColumn();
