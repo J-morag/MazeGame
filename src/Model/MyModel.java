@@ -3,6 +3,7 @@ package Model;
 import Client.*;
 import IO.MyDecompressorInputStream;
 import Server.*;
+import ViewModel.MyViewModel;
 import algorithms.mazeGenerators.Maze;
 import algorithms.search.AState;
 import algorithms.search.Solution;
@@ -13,6 +14,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Observable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MyModel  extends Observable implements IModel {
 
@@ -24,6 +27,7 @@ public class MyModel  extends Observable implements IModel {
     private int characterPositionRow;
     private int characterPositionColumn;
     private Solution mazeSolution;
+    private ExecutorService clientThreadPool = Executors.newCachedThreadPool();
 
     public MyModel() {
         maze = new Maze();
@@ -67,12 +71,14 @@ public class MyModel  extends Observable implements IModel {
                     }
                 }
             });
-            client.communicateWithServer();
+            clientThreadPool.execute(() ->{
+                client.communicateWithServer();
+            });
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
         setChanged();
-        notifyObservers();
+        notifyObservers(MyViewModel.EventType.MAZE);
     }
 
     @Override
@@ -93,27 +99,61 @@ public class MyModel  extends Observable implements IModel {
     @Override
     public void moveCharacter(KeyCode movement) {
         switch (movement){
-            case UP:
             case  DIGIT8:
             case NUMPAD8:
-                characterPositionRow--;
+                if (!(isPass(characterPositionRow-1,characterPositionColumn))) {
+                    setChanged();
+                    notifyObservers(MyViewModel.EventType.INVALIDMOVEMENT);
+                    return;
+                }
+                else characterPositionRow--;
                 break;
-            case DOWN:
             case DIGIT2:
             case NUMPAD2:
-                characterPositionRow++;
+                if (!(isPass(characterPositionRow+1,characterPositionColumn))) {
+                    setChanged();
+                    notifyObservers(MyViewModel.EventType.INVALIDMOVEMENT);
+                    return;
+                }
+                else
+                    characterPositionRow++;
                 break;
-            case RIGHT: //TODO add other directions and wall logic
-                characterPositionColumn++;
+            case DIGIT6:
+            case NUMPAD6:
+                if (!(isPass(characterPositionRow,characterPositionColumn+1))) {
+                    setChanged();
+                    notifyObservers(MyViewModel.EventType.INVALIDMOVEMENT);
+                    return;
+                }
+                else
+                    characterPositionColumn++;
                 break;
-            case LEFT:
-                characterPositionColumn--;
+            case DIGIT4:
+            case NUMPAD4:
+                if (!(isPass(characterPositionRow,characterPositionColumn-1))) {
+                    setChanged();
+                    notifyObservers(MyViewModel.EventType.INVALIDMOVEMENT);
+                    return;
+                }
+                else
+                    characterPositionColumn--;
                 break;
         }
         setChanged();
-        notifyObservers();
+        notifyObservers(MyViewModel.EventType.MOVEMENT);
     }
 
+    private boolean isPass (int row, int column){
+        //check if position is out of bounds of the maze
+        if(row < 0 || column < 0 || row > maze.getMazeMap().length || column > (maze.getMazeMap())[0].length) {
+            return false;
+        }
+        //check if position is wall
+        if(maze.getMazeMap()[row][column] == 1){
+            return false;
+        }
+        return true;
+    }
     @Override
     public void solve() {
         try {
@@ -133,10 +173,14 @@ public class MyModel  extends Observable implements IModel {
                     }
                 }
             });
-            client.communicateWithServer();
+            clientThreadPool.execute(() ->{
+                client.communicateWithServer();
+            });
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+        setChanged();
+        notifyObservers(MyViewModel.EventType.SOLUTION);
     }
 
     @Override
@@ -177,6 +221,8 @@ public class MyModel  extends Observable implements IModel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        setChanged();
+        notifyObservers(MyViewModel.EventType.MESSAGE);
     }
 
     @Override
