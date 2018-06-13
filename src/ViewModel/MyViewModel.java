@@ -61,4 +61,8 @@ public class MyViewModel extends Observable implements Observer{
     public static String getConfiguration(String prop) {
         return IModel.getConfiguration(prop);
     }
+    public void changeConfiguration(String prop, String value) {
+        model.changeConfiguration(prop, value);
+        model.storeConfigurations();
+    }
 }

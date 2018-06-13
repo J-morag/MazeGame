@@ -25,4 +25,6 @@ public interface IModel {
         else return Server.Configurations.searchAlgorithm.getCurrValue().toString();
     }
     void exit();
+
+    void storeConfigurations();
 }

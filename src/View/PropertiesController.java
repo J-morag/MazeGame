@@ -1,6 +1,7 @@
 package View;
 
 import ViewModel.MyViewModel;
+import algorithms.search.DepthFirstSearch;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,21 +13,26 @@ import javafx.stage.Stage;
 
 public class PropertiesController {
 
+    private MyViewModel viewModel;
     public javafx.scene.control.Label lbl_propertyDescription;
     public javafx.scene.control.ChoiceBox choiceBox_generationAlgo;
     public javafx.scene.control.ChoiceBox choiceBox_solutionAlgo;
     private ObservableList<String> generationAlgorithmOptions = FXCollections.observableArrayList("MyMazeGenerator","SimpleMazeGenerator");
+    private ObservableList<String> solutionAlgorithmOptions = FXCollections.observableArrayList("BestFirstSearch","BreadthFirstSearch", "DepthFirstSearch", "AStar");
 
 
-    public void prepareToShow(){
+    public void prepareToShow( MyViewModel viewModel){
         choiceBox_generationAlgo.setItems(generationAlgorithmOptions);
-        choiceBox_generationAlgo.accessibleTextProperty().setValue(MyViewModel.getConfiguration("generatorClass"));
+        choiceBox_generationAlgo.setValue(MyViewModel.getConfiguration("generatorClass"));
+        choiceBox_solutionAlgo.setValue(MyViewModel.getConfiguration("searchAlgorithm"));
+        this.viewModel = viewModel;
     }
 
 
     public void propertiesShowGeneratorDescription(){
         lbl_propertyDescription.visibleProperty().setValue(true);
         lbl_propertyDescription.setText("Explanation:\nThis option sets the desired method for generating a new maze. Changing this will not effect your current open maze.");
+        System.out.println(choiceBox_generationAlgo.getValue().toString());
     }
     public void propertiesHideGeneratorDescription(){
         lbl_propertyDescription.visibleProperty().setValue(false);
@@ -43,7 +49,16 @@ public class PropertiesController {
     }
 
     public void applyProperties(){
-        //TODO implement
+        viewModel.changeConfiguration("generatorClass", choiceBox_generationAlgo.getValue().toString());
+        viewModel.changeConfiguration("searchAlgorithm", choiceBox_solutionAlgo.getValue().toString());
+    }
+
+    public void saveAndExit(){
+
+    }
+
+    public void exit(){
+
     }
 
     public void generationConfigurationChange() {

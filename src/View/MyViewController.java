@@ -124,7 +124,7 @@ public class MyViewController implements IView{
             stage.initModality(Modality.APPLICATION_MODAL); //Lock the window until it closes
 
             PropertiesController propWindow = fxmlLoader.getController();
-            propWindow.prepareToShow();
+            propWindow.prepareToShow(viewModel);
 
             stage.show();
         } catch (Exception e) {

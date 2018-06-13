@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<SplitPane dividerPositions="0.38294314381270905" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1" fx:controller="View.PropertiesController">
+<SplitPane dividerPositions="0.38127090301003347" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.PropertiesController">
   <items>
       <GridPane>
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="106.0" minWidth="10.0" prefWidth="87.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="151.0" minWidth="10.0" prefWidth="134.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -22,9 +24,9 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Text onMouseEntered="#propertiesShowGeneratorDescription" onMouseExited="#propertiesHideGeneratorDescription" strokeType="OUTSIDE" strokeWidth="0.0" text="Generation Algorithm" textAlignment="CENTER" wrappingWidth="105.13671875" />
+            <Text onMouseEntered="#propertiesShowGeneratorDescription" onMouseExited="#propertiesHideGeneratorDescription" strokeType="OUTSIDE" strokeWidth="0.0" text="Generation Algorithm" textAlignment="CENTER" wrappingWidth="86.13671875" />
             <ChoiceBox fx:id="choiceBox_generationAlgo" onMouseEntered="#propertiesShowGeneratorDescription" onMouseExited="#propertiesHideGeneratorDescription" prefWidth="150.0" GridPane.columnIndex="1" />
-            <Text onMouseEntered="#propertiesShowSolutionDescription" onMouseExited="#propertiesHideSolutionDescription" strokeType="OUTSIDE" strokeWidth="0.0" text=" Solution     Algorithm   " textAlignment="CENTER" wrappingWidth="105.13671875" GridPane.rowIndex="1">
+            <Text onMouseEntered="#propertiesShowSolutionDescription" onMouseExited="#propertiesHideSolutionDescription" strokeType="OUTSIDE" strokeWidth="0.0" text=" Solution     Algorithm   " textAlignment="CENTER" wrappingWidth="82.13671875" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets left="5.0" />
                </GridPane.margin>
@@ -35,6 +37,42 @@
             <Insets left="4.0" />
          </padding>
       </GridPane>
-      <Label fx:id="lbl_propertyDescription" alignment="TOP_LEFT" prefHeight="375.0" prefWidth="401.0" text="Property descrption" visible="false" wrapText="true" />
+      <VBox prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <Label fx:id="lbl_propertyDescription" alignment="TOP_LEFT" prefHeight="292.0" prefWidth="290.0" text="Property descrption" visible="false" wrapText="true" />
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Button fx:id="btn_Cancel" mnemonicParsing="false" onAction="#exit" text="Cancel" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
+                  </Button>
+                  <Button fx:id="btn_OK" mnemonicParsing="false" onAction="#saveAndExit" text="OK" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="30.0" />
+                     </GridPane.margin>
+                  </Button>
+                  <Button fx:id="btn_Apply" mnemonicParsing="false" onAction="#applyProperties" text="Apply" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
+                  </Button>
+               </children>
+            </GridPane>
+         </children>
+         <padding>
+            <Insets left="4.0" />
+         </padding>
+      </VBox>
   </items>
 </SplitPane>

@@ -193,4 +193,9 @@ public class MyModel  extends Observable implements IModel {
     public void exit() {
 
     }
+
+    @Override
+    public void storeConfigurations() {
+        Server.Configurations.store("resources/config.properties");
+    }
 }
