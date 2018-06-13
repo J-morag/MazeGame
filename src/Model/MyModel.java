@@ -24,7 +24,7 @@ public class MyModel  extends Observable implements IModel {
     ServerStrategyGenerateMaze strategyGenerateServer;
     ServerStrategySolveSearchProblem strategySolveServer;
     private Maze maze;
-    private int characterPositionRow;
+    private int characterPositionRow; //TODO something is wrong here. maybe because the stuff with indexes in maze displayer
     private int characterPositionColumn;
     private Solution mazeSolution;
     private ExecutorService clientThreadPool = Executors.newCachedThreadPool();
@@ -156,7 +156,7 @@ public class MyModel  extends Observable implements IModel {
 
     private boolean isPass (int row, int column){
         //check if position is out of bounds of the maze
-        if(row < 0 || column < 0 || row > maze.getMazeMap().length || column > (maze.getMazeMap())[0].length) {
+        if(row < 0 || column < 0 || row >= maze.getMazeMap().length || column >= (maze.getMazeMap())[0].length) {
             return false;
         }
         //check if position is wall
@@ -209,6 +209,7 @@ public class MyModel  extends Observable implements IModel {
 
     @Override
     public Solution getSolution() {
+        CommunicateWithServer_SolveSearchProblem();
         return mazeSolution;
     }
 
@@ -223,8 +224,8 @@ public class MyModel  extends Observable implements IModel {
         int[][] map = new int[maze.getMazeMap().length][(maze.getMazeMap())[0].length];
         for (AState step:mazeSolutionPath) {
             String[] stepStrArr = step.toString().split(",");
-            int row = Integer.parseInt(stepStrArr[0]);
-            int column = Integer.parseInt(stepStrArr[1]);
+            int row = Integer.parseInt(stepStrArr[0].substring(1));
+            int column = Integer.parseInt(stepStrArr[1].substring(0,1));
             map[row][column] = 1;
         }
         return map;

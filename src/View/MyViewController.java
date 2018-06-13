@@ -3,6 +3,9 @@ package View;
 import ViewModel.MyViewModel;
 import ViewModel.MyViewModel.EventType;
 import algorithms.search.Solution;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -21,6 +24,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.Observable;
 
@@ -34,6 +38,7 @@ public class MyViewController implements IView{
     public javafx.scene.control.Label lbl_columnsNum;
     public javafx.scene.control.Button btn_newMaze;
     public javafx.scene.control.Button btn_flashSolution;
+    public javafx.scene.control.ToggleButton tglbtn_showSolution;
     public Label lbl_statusText;
     public BorderPane bdpn_background;
 
@@ -50,9 +55,11 @@ public class MyViewController implements IView{
         lbl_columnsNum.textProperty().bind(viewModel.characterPositionColumn);
     }
 
-    @Override
-    public void displayMaze(int[][] maze) {
+    public void setMaze(int[][] maze) {
         mazeDisplayer.setMaze(maze);
+    }
+    public void setSolution(int[][] solution) {
+        mazeDisplayer.setSolution(solution);
     }
 
     private void positionCharacter(){
@@ -63,25 +70,45 @@ public class MyViewController implements IView{
         this.characterPositionColumn.set(characterPositionColumn + "");
     }
 
-    private void displaySolution(int[][] solution){
-        mazeDisplayer.setSolution(solution);
-    }
     public void toggleSolutionVisibility(ActionEvent actionEvent){
-        if(btn_flashSolution.isArmed()) solveMaze(actionEvent);
-        else hideSolution();
+        if(tglbtn_showSolution.isSelected()) {
+            displaySolution();
+            btn_flashSolution.setDisable(true);
+        }
+        else {
+            hideSolution();
+            btn_flashSolution.setDisable(false);
+        }
+    }
+    public void displaySolution(){
+        mazeDisplayer.showSolution();
     }
     public void hideSolution(){
         mazeDisplayer.hideSolution();
     }
     private void animationInvalidMovement(){
-        bdpn_background.setStyle("-fx-background-color: #800000;");
+//        final Timeline timeline = new Timeline();
+//        timeline.setCycleCount(Timeline.INDEFINITE);
+//        timeline.setAutoReverse(true);
+//        final KeyValue kv = new KeyValue(bdpn_background.setStyle("-fx-background-color: #800000;"));
+//        final KeyFrame kf = new KeyFrame(Duration.millis(250), kv);
+//        timeline.getKeyFrames().add(kf);
+//        timeline.play();
+//        bdpn_background.setStyle("-fx-background-color: #800000;");
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        bdpn_background.setStyle("-fx-background-color: #d5e8ff;");
+
     }
 
     @Override
     public void update(Observable o, Object arg) {
         if (o == viewModel) {
             if (arg == EventType.MAZE){
-                displayMaze(viewModel.getMaze());
+                setMaze(viewModel.getMaze());
                 positionCharacter();
                 btn_newMaze.setDisable(false);
                 lbl_statusText.setText("Ready");
@@ -90,8 +117,10 @@ public class MyViewController implements IView{
                 positionCharacter();
             }
             else if (arg == EventType.SOLUTION){
-                displaySolution(viewModel.getSolution());
+                setSolution(viewModel.getSolution());
                 lbl_statusText.setText("Ready");
+                btn_flashSolution.setDisable(false);
+                tglbtn_showSolution.setDisable(false);
             }
             else if (arg == EventType.INVALIDMOVEMENT){
                 animationInvalidMovement();
@@ -111,19 +140,19 @@ public class MyViewController implements IView{
         try{
             int rows = Integer.valueOf(txtfld_rowsNum.getText());
             int columns = Integer.valueOf(txtfld_columnsNum.getText());
-            viewModel.generateMaze(rows, columns);
             lbl_statusText.setText("Generating maze...");
+            mazeDisplayer.hideSolution();
+            viewModel.generateMaze(rows, columns);
+            lbl_statusText.setText("Solving maze...");
+            viewModel.generateSolution();
         }
         catch(NumberFormatException e){
+//            e.printStackTrace();
             showAlert(invalidRowsOrColumnsMessage);
             btn_newMaze.setDisable(false);
         }
     }
 
-
-    public void solveMaze(ActionEvent actionEvent) {
-        lbl_statusText.setText("Solving maze...");
-    }
 
 
     private void showAlert(String alertMessage) {

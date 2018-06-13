@@ -65,6 +65,10 @@ public class MyViewModel extends Observable implements Observer{
         model.generateMaze(width, height);
     }
 
+    public void generateSolution(){
+        model.getSolution();
+    }
+
     public void moveCharacter(KeyCode movement){
         model.moveCharacter(movement);
     }

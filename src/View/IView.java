@@ -8,7 +8,7 @@ interface IView extends Observer{
     void exit();
     void saveGame();
     void loadGame();
-    void displayMaze(int[][] maze);
+
 
 
 

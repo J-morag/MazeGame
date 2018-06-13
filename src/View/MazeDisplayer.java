@@ -36,11 +36,15 @@ public class MazeDisplayer extends Canvas {
     public void setSolution(int[][] solution){
         this.solution = solution;
         this.solutionVisible = true;
-        redraw();
     }
 
     public void hideSolution(){
         this.solutionVisible = false;
+        redraw();
+    }
+
+    public void showSolution(){
+        this.solutionVisible = true;
         redraw();
     }
 
@@ -75,12 +79,12 @@ public class MazeDisplayer extends Canvas {
                 gc.clearRect(0, 0, getWidth(), getHeight());
 
                 //Draw Maze
-                for (int i = 0; i < maze.length; i++) {
-                    for (int j = 0; j < maze[i].length; j++) {
-                        if(solutionVisible && 1 == solution[i][j]){//draw solution
+                for (int i = 0; i < maze[0].length; i++) {
+                    for (int j = 0; j < maze.length; j++) {
+                        if(solutionVisible && 1 == solution[j][i]){//draw solution
                             gc.drawImage(solutionImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
                         }
-                        else if (maze[i][j] == 1) {
+                        else if (maze[j][i] == 1) {
                             //gc.fillRect(i * cellHeight, j * cellWidth, cellHeight, cellWidth);
                             gc.drawImage(wallImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
                         }
