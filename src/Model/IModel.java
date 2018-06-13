@@ -1,6 +1,6 @@
 package Model;
 
-import Server.Server;
+import Server.*;
 import algorithms.mazeGenerators.Maze;
 import algorithms.search.Solution;
 import javafx.scene.input.KeyCode;
@@ -13,7 +13,7 @@ public interface IModel {
     int getCharacterPositionColumn();
     void moveCharacter (KeyCode movement);
     void solve ();
-    void solutionOn2DArr();
+    int[][] solutionOnMap();
     void save(String pathFile);
     void load(String pathFile);
     void stopServers();
@@ -24,7 +24,5 @@ public interface IModel {
         }
         else return Server.Configurations.searchAlgorithm.getCurrValue().toString();
     }
-    void exit();
-
     void storeConfigurations();
 }
