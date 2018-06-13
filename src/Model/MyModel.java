@@ -31,6 +31,7 @@ public class MyModel  extends Observable implements IModel {
         characterPositionColumn = maze.getStartPosition().getColumnIndex();
         mazeSolution = new Solution();
 
+        Server.Configurations.load("resources/config.properties");
         strategyGenerateServer = new ServerStrategyGenerateMaze();
         generateServer = new Server(5400, 7000,strategyGenerateServer);
         strategySolveServer = new ServerStrategySolveSearchProblem();
@@ -93,9 +94,13 @@ public class MyModel  extends Observable implements IModel {
     public void moveCharacter(KeyCode movement) {
         switch (movement){
             case UP:
+            case  DIGIT8:
+            case NUMPAD8:
                 characterPositionRow--;
                 break;
             case DOWN:
+            case DIGIT2:
+            case NUMPAD2:
                 characterPositionRow++;
                 break;
             case RIGHT:

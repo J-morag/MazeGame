@@ -5,15 +5,19 @@ import algorithms.search.DepthFirstSearch;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class PropertiesController {
 
     private MyViewModel viewModel;
+    @FXML
+    private Button btn_Cancel;
     public javafx.scene.control.Label lbl_propertyDescription;
     public javafx.scene.control.ChoiceBox choiceBox_generationAlgo;
     public javafx.scene.control.ChoiceBox choiceBox_solutionAlgo;
@@ -23,6 +27,7 @@ public class PropertiesController {
 
     public void prepareToShow( MyViewModel viewModel){
         choiceBox_generationAlgo.setItems(generationAlgorithmOptions);
+        choiceBox_solutionAlgo.setItems(solutionAlgorithmOptions);
         choiceBox_generationAlgo.setValue(MyViewModel.getConfiguration("generatorClass"));
         choiceBox_solutionAlgo.setValue(MyViewModel.getConfiguration("searchAlgorithm"));
         this.viewModel = viewModel;
@@ -32,7 +37,6 @@ public class PropertiesController {
     public void propertiesShowGeneratorDescription(){
         lbl_propertyDescription.visibleProperty().setValue(true);
         lbl_propertyDescription.setText("Explanation:\nThis option sets the desired method for generating a new maze. Changing this will not effect your current open maze.");
-        System.out.println(choiceBox_generationAlgo.getValue().toString());
     }
     public void propertiesHideGeneratorDescription(){
         lbl_propertyDescription.visibleProperty().setValue(false);
@@ -54,15 +58,13 @@ public class PropertiesController {
     }
 
     public void saveAndExit(){
-
+        applyProperties();
+        exit();
     }
 
     public void exit(){
-
+        Stage stage = (Stage) btn_Cancel.getScene().getWindow();
+        stage.close();
     }
 
-    public void generationConfigurationChange() {
-        //TODO implement
-
-    }
 }

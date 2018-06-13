@@ -12,8 +12,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -23,12 +25,14 @@ public class MyViewController implements IView{
 
     @FXML
     private MyViewModel viewModel;
-    public MazeDisplayer mazeDisplayer;
     public javafx.scene.control.TextField txtfld_rowsNum;
     public javafx.scene.control.TextField txtfld_columnsNum;
     public javafx.scene.control.Label lbl_rowsNum;
     public javafx.scene.control.Label lbl_columnsNum;
     public javafx.scene.control.Button btn_newMaze;
+
+    public MazeDisplayer mazeDisplayer = new MazeDisplayer();
+    private String invalidRowsOrColumnsMessage = "Rows and Columns must be numbers, equal to or greater than 5.";
 
     public void setViewModel(MyViewModel viewModel) {
         this.viewModel = viewModel;
@@ -58,10 +62,46 @@ public class MyViewController implements IView{
         }
     }
 
+    @Override
+    public void newGame() {
+        btn_newMaze.setDisable(true);
+        try{
+            int rows = Integer.valueOf(txtfld_rowsNum.getText());
+            int columns = Integer.valueOf(txtfld_columnsNum.getText());
+            viewModel.generateMaze(rows, columns);
+            displayMaze(viewModel.getMaze());
+        }
+        catch(NumberFormatException e){
+            showAlert(invalidRowsOrColumnsMessage);
+            btn_newMaze.setDisable(false);
+        }
+    }
+
+
+    public void solveMaze(ActionEvent actionEvent) {
+        showAlert("Solving maze..");
+    }
+
+
+    private void showAlert(String alertMessage) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText(alertMessage);
+        alert.show();
+    }
+
+    public void KeyPressed(KeyEvent keyEvent) {
+        if(keyEvent.getCode().isDigitKey()){
+            viewModel.moveCharacter(keyEvent.getCode());
+        }
+        keyEvent.consume();
+    }
+
     //region String Property for Binding
     public StringProperty characterPositionRow = new SimpleStringProperty();
     public StringProperty characterPositionColumn = new SimpleStringProperty();
-    public StringProperty generationAlgorithmConfig = new SimpleStringProperty();
+    public StringProperty rows = new SimpleStringProperty();
+    public StringProperty columns = new SimpleStringProperty();
+
 
     public String getCharacterPositionRow() {
         return characterPositionRow.get();
@@ -119,7 +159,7 @@ public class MyViewController implements IView{
             stage.setTitle("Properties");
             FXMLLoader fxmlLoader = new FXMLLoader();
             Parent root = fxmlLoader.load(getClass().getResource("Properties.fxml").openStream());
-            Scene scene = new Scene(root, 350, 400);
+            Scene scene = new Scene(root, 600, 350);
             stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL); //Lock the window until it closes
 
@@ -133,10 +173,7 @@ public class MyViewController implements IView{
     }
 
 
-    @Override
-    public void newGame() {
-        displayMaze(viewModel.getMaze()); //TODO replace with proper maze generation
-    }
+
 
 
 
@@ -147,9 +184,7 @@ public class MyViewController implements IView{
 
     @Override
     public void exit() {
-        //TODO close servers
-        //TODO other stuff
-
+        viewModel.exit();
     }
 
     @Override

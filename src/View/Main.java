@@ -17,6 +17,8 @@ import java.util.Optional;
 
 public class Main extends Application {
 
+    private MyViewController viewC;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         MyModel model = new MyModel();
@@ -29,10 +31,9 @@ public class Main extends Application {
         Parent root = fxmlLoader.load(getClass().getResource("MyView.fxml").openStream());
         Scene scene = new Scene(root, 1000, 650);
         primaryStage.setScene(scene);
-        primaryStage.setMinHeight(440);
-        primaryStage.setMinWidth(600);
         //--------------
         MyViewController view = fxmlLoader.getController();
+        viewC = view;
         view.setResizeEvent(scene);
         view.setViewModel(viewModel);
         viewModel.addObserver(view);
@@ -45,10 +46,10 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent windowEvent) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Exit?");
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK){
-                    // ... user chose OK
-                    // Close program
+                    viewC.exit();
                 } else {
                     // ... user chose CANCEL or closed the dialog
                     windowEvent.consume();

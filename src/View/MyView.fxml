@@ -20,7 +20,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
+<?import View.MazeDisplayer?>
+<BorderPane onKeyPressed="#KeyPressed" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="440" minWidth="600" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
    <bottom>
       <HBox prefHeight="13.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
          <children>
@@ -169,7 +170,14 @@
    </left>
    <center>
       <Pane BorderPane.alignment="CENTER">
-
+          <children>
+              <MazeDisplayer fx:id="mazeDisplayer" height="600.0" width="600.0"
+                             imageFileNameCharacter="resources/Images/character1.jpg"
+                             imageFileNameWall="resources/Images/wall1.jpg" />
+          </children>
+          <padding>
+              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+          </padding>
       </Pane>
    </center>
 </BorderPane>

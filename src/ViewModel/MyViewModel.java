@@ -22,6 +22,7 @@ public class MyViewModel extends Observable implements Observer{
 //    public StringProperty mazeGenerationAlgorithmConfig = new SimpleStringProperty("MyMazeGenerator");
 
 
+
     public MyViewModel(IModel model){
         this.model = model;
     }
@@ -64,5 +65,9 @@ public class MyViewModel extends Observable implements Observer{
     public void changeConfiguration(String prop, String value) {
         model.changeConfiguration(prop, value);
         model.storeConfigurations();
+    }
+
+    public void exit(){
+        model.stopServers();
     }
 }
