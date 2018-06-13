@@ -45,7 +45,7 @@ public class MyModel  extends Observable implements IModel {
     public void generateMaze(int rows, int columns) {
         if(rows < 5 || columns < 5)
             throw new IndexOutOfBoundsException();
-        try {
+        try { //TODO does this run in a new thread? if no, it should.
             Client client = new Client(InetAddress.getLocalHost(), 5400, new IClientStrategy() {
                 public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
                     try {
@@ -103,7 +103,7 @@ public class MyModel  extends Observable implements IModel {
             case NUMPAD2:
                 characterPositionRow++;
                 break;
-            case RIGHT:
+            case RIGHT: //TODO add other directions and wall logic
                 characterPositionColumn++;
                 break;
             case LEFT:

@@ -30,6 +30,7 @@ public class MyViewController implements IView{
     public javafx.scene.control.Label lbl_rowsNum;
     public javafx.scene.control.Label lbl_columnsNum;
     public javafx.scene.control.Button btn_newMaze;
+    public Label lbl_statusText;
 
     public MazeDisplayer mazeDisplayer = new MazeDisplayer();
     private String invalidRowsOrColumnsMessage = "Rows and Columns must be numbers, equal to or greater than 5.";
@@ -59,6 +60,7 @@ public class MyViewController implements IView{
         if (o == viewModel) {
             displayMaze(viewModel.getMaze());
             btn_newMaze.setDisable(false);
+            lbl_statusText.setText("Ready");
         }
     }
 
@@ -69,7 +71,7 @@ public class MyViewController implements IView{
             int rows = Integer.valueOf(txtfld_rowsNum.getText());
             int columns = Integer.valueOf(txtfld_columnsNum.getText());
             viewModel.generateMaze(rows, columns);
-            displayMaze(viewModel.getMaze());
+            lbl_statusText.setText("Generating maze...");
         }
         catch(NumberFormatException e){
             showAlert(invalidRowsOrColumnsMessage);
@@ -99,8 +101,6 @@ public class MyViewController implements IView{
     //region String Property for Binding
     public StringProperty characterPositionRow = new SimpleStringProperty();
     public StringProperty characterPositionColumn = new SimpleStringProperty();
-    public StringProperty rows = new SimpleStringProperty();
-    public StringProperty columns = new SimpleStringProperty();
 
 
     public String getCharacterPositionRow() {

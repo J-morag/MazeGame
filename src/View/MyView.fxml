@@ -25,7 +25,7 @@
    <bottom>
       <HBox prefHeight="13.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Ready">
+            <Label fx:id="lbl_statusText" text="Ready">
                <HBox.margin>
                   <Insets left="4.0" />
                </HBox.margin>
