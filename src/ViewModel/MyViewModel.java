@@ -32,13 +32,32 @@ public class MyViewModel extends Observable implements Observer{
 
     @Override
     public void update(Observable o, Object arg) {
-        if (o==model && arg == EventType.MAZE){
-            characterPositionRowIndex = model.getCharacterPositionRow();
-            characterPositionRow.set(characterPositionRowIndex + "");
-            characterPositionColumnIndex = model.getCharacterPositionColumn();
-            characterPositionColumn.set(characterPositionColumnIndex + "");
-            setChanged();
-            notifyObservers();
+        if (o==model){
+            if (arg == EventType.MOVEMENT || arg == EventType.MAZE){
+                characterPositionRowIndex = model.getCharacterPositionRow();
+                characterPositionRow.set(characterPositionRowIndex + "");
+                characterPositionColumnIndex = model.getCharacterPositionColumn();
+                characterPositionColumn.set(characterPositionColumnIndex + "");
+                setChanged();
+                notifyObservers(arg);
+            }
+            else if (arg == EventType.SOLUTION){
+                setChanged();
+                notifyObservers(arg);
+            }
+            else if (arg == EventType.INVALIDMOVEMENT){
+                setChanged();
+                notifyObservers(arg);
+            }
+            else if (arg == EventType.ERRORMESSAGE){
+                setChanged();
+                notifyObservers(arg);
+            }
+            else if (arg instanceof String){
+                setChanged();
+                notifyObservers(arg);
+            }
+
         }
     }
 
@@ -72,5 +91,9 @@ public class MyViewModel extends Observable implements Observer{
 
     public void exit(){
         model.stopServers();
+    }
+
+    public int[][] getSolution(){
+        return model.solutionOnMap();
     }
 }

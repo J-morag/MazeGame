@@ -23,11 +23,24 @@ import java.util.ResourceBundle;
 public class MazeDisplayer extends Canvas {
 
     private int[][] maze;
+    private int[][] solution;
     private int characterPositionRow = 1;
     private int characterPositionColumn = 1;
+    boolean solutionVisible = false;
 
     public void setMaze(int[][] maze) {
         this.maze = maze;
+        redraw();
+    }
+
+    public void setSolution(int[][] solution){
+        this.solution = solution;
+        this.solutionVisible = true;
+        redraw();
+    }
+
+    public void hideSolution(){
+        this.solutionVisible = false;
         redraw();
     }
 
@@ -54,7 +67,9 @@ public class MazeDisplayer extends Canvas {
 
             try {
                 Image wallImage = new Image(new FileInputStream(ImageFileNameWall.get()));
+                Image floorImage = new Image(new FileInputStream(imageFileNameFloor.get()));
                 Image characterImage = new Image(new FileInputStream(ImageFileNameCharacter.get()));
+                Image solutionImage = new Image(new FileInputStream(imageFileNameSolution.get()));
 
                 GraphicsContext gc = getGraphicsContext2D();
                 gc.clearRect(0, 0, getWidth(), getHeight());
@@ -62,10 +77,14 @@ public class MazeDisplayer extends Canvas {
                 //Draw Maze
                 for (int i = 0; i < maze.length; i++) {
                     for (int j = 0; j < maze[i].length; j++) {
-                        if (maze[i][j] == 1) {
+                        if(solutionVisible && 1 == solution[i][j]){//draw solution
+                            gc.drawImage(solutionImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
+                        }
+                        else if (maze[i][j] == 1) {
                             //gc.fillRect(i * cellHeight, j * cellWidth, cellHeight, cellWidth);
                             gc.drawImage(wallImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
                         }
+                        else gc.drawImage(floorImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
                     }
                 }
 
@@ -82,6 +101,8 @@ public class MazeDisplayer extends Canvas {
     // Properties
     private StringProperty ImageFileNameWall = new SimpleStringProperty();
     private StringProperty ImageFileNameCharacter = new SimpleStringProperty();
+    private StringProperty imageFileNameFloor = new SimpleStringProperty("resources/Images/floor1.jpg");
+    private StringProperty imageFileNameSolution = new SimpleStringProperty("resources/Images/path1.jpg");
 
     public String getImageFileNameWall() {
         return ImageFileNameWall.get();

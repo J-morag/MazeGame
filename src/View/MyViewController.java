@@ -1,6 +1,8 @@
 package View;
 
 import ViewModel.MyViewModel;
+import ViewModel.MyViewModel.EventType;
+import algorithms.search.Solution;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -16,6 +18,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -30,7 +33,9 @@ public class MyViewController implements IView{
     public javafx.scene.control.Label lbl_rowsNum;
     public javafx.scene.control.Label lbl_columnsNum;
     public javafx.scene.control.Button btn_newMaze;
+    public javafx.scene.control.Button btn_flashSolution;
     public Label lbl_statusText;
+    public BorderPane bdpn_background;
 
     public MazeDisplayer mazeDisplayer = new MazeDisplayer();
     private String invalidRowsOrColumnsMessage = "Rows and Columns must be numbers, equal to or greater than 5.";
@@ -48,6 +53,9 @@ public class MyViewController implements IView{
     @Override
     public void displayMaze(int[][] maze) {
         mazeDisplayer.setMaze(maze);
+    }
+
+    private void positionCharacter(){
         int characterPositionRow = viewModel.getCharacterPositionRow();
         int characterPositionColumn = viewModel.getCharacterPositionColumn();
         mazeDisplayer.setCharacterPosition(characterPositionRow, characterPositionColumn);
@@ -55,12 +63,45 @@ public class MyViewController implements IView{
         this.characterPositionColumn.set(characterPositionColumn + "");
     }
 
+    private void displaySolution(int[][] solution){
+        mazeDisplayer.setSolution(solution);
+    }
+    public void toggleSolutionVisibility(ActionEvent actionEvent){
+        if(btn_flashSolution.isArmed()) solveMaze(actionEvent);
+        else hideSolution();
+    }
+    public void hideSolution(){
+        mazeDisplayer.hideSolution();
+    }
+    private void animationInvalidMovement(){
+        bdpn_background.setStyle("-fx-background-color: #800000;");
+    }
+
     @Override
     public void update(Observable o, Object arg) {
         if (o == viewModel) {
-            displayMaze(viewModel.getMaze());
-            btn_newMaze.setDisable(false);
-            lbl_statusText.setText("Ready");
+            if (arg == EventType.MAZE){
+                displayMaze(viewModel.getMaze());
+                positionCharacter();
+                btn_newMaze.setDisable(false);
+                lbl_statusText.setText("Ready");
+            }
+            else if (arg == EventType.MOVEMENT ){
+                positionCharacter();
+            }
+            else if (arg == EventType.SOLUTION){
+                displaySolution(viewModel.getSolution());
+                lbl_statusText.setText("Ready");
+            }
+            else if (arg == EventType.INVALIDMOVEMENT){
+                animationInvalidMovement();
+            }
+            else if (arg == EventType.ERRORMESSAGE){
+
+            }
+            else if (arg instanceof String){
+
+            }
         }
     }
 
@@ -71,7 +112,6 @@ public class MyViewController implements IView{
             int rows = Integer.valueOf(txtfld_rowsNum.getText());
             int columns = Integer.valueOf(txtfld_columnsNum.getText());
             viewModel.generateMaze(rows, columns);
-            displayMaze(viewModel.getMaze());
             lbl_statusText.setText("Generating maze...");
         }
         catch(NumberFormatException e){
@@ -82,7 +122,7 @@ public class MyViewController implements IView{
 
 
     public void solveMaze(ActionEvent actionEvent) {
-        showAlert("Solving maze..");
+        lbl_statusText.setText("Solving maze...");
     }
 
 
