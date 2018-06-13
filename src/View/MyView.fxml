@@ -50,12 +50,12 @@
             <Menu mnemonicParsing="false" text="Options">
               <items>
                 <MenuItem mnemonicParsing="false" onAction="#PropertiesStage" onMenuValidation="#PropertiesStage" text="Properties" />
-                  <Menu mnemonicParsing="false" text="Generation Algorithm">
+                  <Menu mnemonicParsing="false" text="Music Track">
                     <items>
-                        <CheckMenuItem mnemonicParsing="false" text="BestFirstSearch" />
-                        <CheckMenuItem mnemonicParsing="false" text="BreadthFirstSearch" />
-                        <CheckMenuItem mnemonicParsing="false" text="DepthFirstSearch" />
-                        <CheckMenuItem mnemonicParsing="false" text="AStar" />
+                        <CheckMenuItem mnemonicParsing="false" text="Track1" />
+                        <CheckMenuItem mnemonicParsing="false" text="Track2" />
+                        <CheckMenuItem mnemonicParsing="false" text="Track3" />
+                        <CheckMenuItem mnemonicParsing="false" text="Track4" />
                     </items>
                   </Menu>
               </items>
@@ -63,7 +63,7 @@
             <Menu mnemonicParsing="false" text="Exit">
               <items>
                 <MenuItem mnemonicParsing="false" text="Save And Exit" />
-                  <MenuItem mnemonicParsing="false" text="Exit Without Saving" />
+                  <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit Without Saving" />
               </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Help">

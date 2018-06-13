@@ -26,6 +26,8 @@ public class MazeDisplayer extends Canvas {
     private int[][] solution;
     private int characterPositionRow = 1;
     private int characterPositionColumn = 1;
+    private int goalPositionRow;
+    private int goalPositionColumn;
     boolean solutionVisible = false;
 
     public void setMaze(int[][] maze) {
@@ -37,6 +39,7 @@ public class MazeDisplayer extends Canvas {
         this.solution = solution;
         this.solutionVisible = true;
     }
+
 
     public void hideSolution(){
         this.solutionVisible = false;
@@ -74,6 +77,7 @@ public class MazeDisplayer extends Canvas {
                 Image floorImage = new Image(new FileInputStream(imageFileNameFloor.get()));
                 Image characterImage = new Image(new FileInputStream(ImageFileNameCharacter.get()));
                 Image solutionImage = new Image(new FileInputStream(imageFileNameSolution.get()));
+                Image goalImage = new Image(new FileInputStream(imageFileNameGoal.get()));
 
                 GraphicsContext gc = getGraphicsContext2D();
                 gc.clearRect(0, 0, getWidth(), getHeight());
@@ -82,11 +86,16 @@ public class MazeDisplayer extends Canvas {
                 for (int i = 0; i < maze[0].length; i++) {
                     for (int j = 0; j < maze.length; j++) {
                         if(solutionVisible && 1 == solution[j][i]){//draw solution
+                            gc.drawImage(floorImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
                             gc.drawImage(solutionImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
                         }
                         else if (maze[j][i] == 1) {
                             //gc.fillRect(i * cellHeight, j * cellWidth, cellHeight, cellWidth);
                             gc.drawImage(wallImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
+                        }
+                        else if (maze[j][i] == 2){
+                            gc.drawImage(floorImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
+                            gc.drawImage(goalImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
                         }
                         else gc.drawImage(floorImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
                     }
@@ -107,6 +116,7 @@ public class MazeDisplayer extends Canvas {
     private StringProperty ImageFileNameCharacter = new SimpleStringProperty();
     private StringProperty imageFileNameFloor = new SimpleStringProperty("resources/Images/floor1.jpg");
     private StringProperty imageFileNameSolution = new SimpleStringProperty("resources/Images/path1.jpg");
+    private StringProperty imageFileNameGoal = new SimpleStringProperty("resources/Images/goal1.jpg");
 
     public String getImageFileNameWall() {
         return ImageFileNameWall.get();

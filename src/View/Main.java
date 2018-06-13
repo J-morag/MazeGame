@@ -31,6 +31,8 @@ public class Main extends Application {
         Parent root = fxmlLoader.load(getClass().getResource("MyView.fxml").openStream());
         Scene scene = new Scene(root, 1000, 650);
         primaryStage.setScene(scene);
+        primaryStage.setMinHeight(440);
+        primaryStage.setMinWidth(600);
         //--------------
         MyViewController view = fxmlLoader.getController();
         viewC = view;

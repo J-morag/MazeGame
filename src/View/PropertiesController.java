@@ -36,7 +36,7 @@ public class PropertiesController {
 
     public void propertiesShowGeneratorDescription(){
         lbl_propertyDescription.visibleProperty().setValue(true);
-        lbl_propertyDescription.setText("Explanation:\nThis option sets the desired method for generating a new maze. Changing this will not effect your current open maze.");
+        lbl_propertyDescription.setText("Explanation:\nThis option sets the desired method for generating a new maze. Changing this will not affect your currently open maze.");
     }
     public void propertiesHideGeneratorDescription(){
         lbl_propertyDescription.visibleProperty().setValue(false);
@@ -45,7 +45,7 @@ public class PropertiesController {
 
     public void propertiesShowSolutionDescription(){
         lbl_propertyDescription.visibleProperty().setValue(true);
-        lbl_propertyDescription.setText("Explanation:\nThis option sets the desired method for Solving amaze.");
+        lbl_propertyDescription.setText("Explanation:\nThis option sets the desired method for Solving a maze. Changing this will not affect your currently open maze.");
     }
     public void propertiesHideSolutionDescription(){
         lbl_propertyDescription.visibleProperty().setValue(false);

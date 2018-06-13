@@ -22,7 +22,7 @@ public class MyViewModel extends Observable implements Observer{
 //    public StringProperty mazeGenerationAlgorithmConfig = new SimpleStringProperty("MyMazeGenerator");
 
     public enum EventType{
-        MAZE, SOLUTION, MOVEMENT, INVALIDMOVEMENT, ERRORMESSAGE, MESSAGE
+        MAZE, SOLUTION, MOVEMENT, INVALIDMOVEMENT, ERRORMESSAGE, MESSAGE, VICTORY
     }
 
 

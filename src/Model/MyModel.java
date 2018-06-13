@@ -24,7 +24,7 @@ public class MyModel  extends Observable implements IModel {
     ServerStrategyGenerateMaze strategyGenerateServer;
     ServerStrategySolveSearchProblem strategySolveServer;
     private Maze maze;
-    private int characterPositionRow; //TODO something is wrong here. maybe because the stuff with indexes in maze displayer
+    private int characterPositionRow;
     private int characterPositionColumn;
     private Solution mazeSolution;
     private ExecutorService clientThreadPool = Executors.newCachedThreadPool();
@@ -49,18 +49,18 @@ public class MyModel  extends Observable implements IModel {
     public void generateMaze(int rows, int columns) {
         if(rows < 5 || columns < 5) {
             setChanged();
-            notifyObservers("Invalid parameters of maze's sizes");
+            notifyObservers("Maze dimensions must be at least 5X5");
             return;
         }
-        clientThreadPool.execute(() -> {
-            try {
+//        clientThreadPool.execute(() -> {
+//            try {
                 CommunicateWithServer_MazeGenerating(rows, columns);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
             setChanged();
             notifyObservers(MyViewModel.EventType.MAZE);
-        });
+//        });
     }
 
     private void CommunicateWithServer_MazeGenerating(int rows, int columns) {
@@ -94,7 +94,9 @@ public class MyModel  extends Observable implements IModel {
 
     @Override
     public int[][] getMaze() {
-        return maze.getMazeMap();
+        int[][] mazeMap = maze.getMazeMap();
+        mazeMap[maze.getGoalPosition().getRowIndex()][maze.getGoalPosition().getColumnIndex()] = 2;
+        return mazeMap;
     }
 
     @Override
@@ -109,6 +111,9 @@ public class MyModel  extends Observable implements IModel {
 
     @Override
     public void moveCharacter(KeyCode movement) {
+        if (characterPositionRow == maze.getGoalPosition().getRowIndex() && characterPositionColumn == maze.getGoalPosition().getColumnIndex()){
+            return;
+        }
         switch (movement){
             case  DIGIT8:
             case NUMPAD8:
@@ -182,8 +187,6 @@ public class MyModel  extends Observable implements IModel {
                             notifyObservers("Solution is null");
                             return;
                         }
-                        characterPositionRow = maze.getGoalPosition().getRowIndex();
-                        characterPositionColumn = maze.getGoalPosition().getColumnIndex();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

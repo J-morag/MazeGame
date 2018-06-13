@@ -87,6 +87,7 @@ public class MyViewController implements IView{
         mazeDisplayer.hideSolution();
     }
     private void animationInvalidMovement(){
+        System.out.println("You don' goofed");
 //        final Timeline timeline = new Timeline();
 //        timeline.setCycleCount(Timeline.INDEFINITE);
 //        timeline.setAutoReverse(true);
@@ -255,6 +256,8 @@ public class MyViewController implements IView{
     @Override
     public void exit() {
         viewModel.exit();
+        Stage stage = (Stage) btn_newMaze.getScene().getWindow();
+        stage.close();
     }
 
     @Override
