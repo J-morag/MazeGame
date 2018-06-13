@@ -47,9 +47,24 @@ public class MyModel  extends Observable implements IModel {
 
     @Override
     public void generateMaze(int rows, int columns) {
-        if(rows < 5 || columns < 5)
-            throw new IndexOutOfBoundsException();
-        try { //TODO does this run in a new thread? if no, it should.
+        if(rows < 5 || columns < 5) {
+            setChanged();
+            notifyObservers("Invalid parameters of maze's sizes");
+            return;
+        }
+        clientThreadPool.execute(() -> {
+            try {
+                CommunicateWithServer_MazeGenerating(rows, columns);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            setChanged();
+            notifyObservers(MyViewModel.EventType.MAZE);
+        });
+    }
+
+    private void CommunicateWithServer_MazeGenerating(int rows, int columns) {
+        try {
             Client client = new Client(InetAddress.getLocalHost(), 5400, new IClientStrategy() {
                 public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
                     try {
@@ -71,14 +86,10 @@ public class MyModel  extends Observable implements IModel {
                     }
                 }
             });
-            clientThreadPool.execute(() ->{
-                client.communicateWithServer();
-            });
+            client.communicateWithServer();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        setChanged();
-        notifyObservers(MyViewModel.EventType.MAZE);
     }
 
     @Override
@@ -154,8 +165,8 @@ public class MyModel  extends Observable implements IModel {
         }
         return true;
     }
-    @Override
-    public void solve() {
+
+    private void CommunicateWithServer_SolveSearchProblem() {
         try {
             Client client = new Client(InetAddress.getLocalHost(), 5401, new IClientStrategy() {
                 public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
@@ -166,6 +177,11 @@ public class MyModel  extends Observable implements IModel {
                         toServer.writeObject(maze);
                         toServer.flush();
                         mazeSolution = (Solution)fromServer.readObject();
+                        if(mazeSolution == null){
+                            setChanged();
+                            notifyObservers("Solution is null");
+                            return;
+                        }
                         characterPositionRow = maze.getGoalPosition().getRowIndex();
                         characterPositionColumn = maze.getGoalPosition().getColumnIndex();
                     } catch (Exception e) {
@@ -173,14 +189,22 @@ public class MyModel  extends Observable implements IModel {
                     }
                 }
             });
-            clientThreadPool.execute(() ->{
-                client.communicateWithServer();
-            });
+            client.communicateWithServer();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        setChanged();
-        notifyObservers(MyViewModel.EventType.SOLUTION);
+    }
+    @Override
+    public void solve() {
+        clientThreadPool.execute(() -> {
+            try {
+                CommunicateWithServer_SolveSearchProblem();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            setChanged();
+            notifyObservers(MyViewModel.EventType.SOLUTION);
+        });
     }
 
     @Override
