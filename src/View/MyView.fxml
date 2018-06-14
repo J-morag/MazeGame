@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import View.MazeDisplayer?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
@@ -18,10 +19,10 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<?import View.MazeDisplayer?>
-<BorderPane fx:id="bdpn_background" style="-fx-background-color: #d5e8ff;" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="440" minWidth="600" onKeyPressed="#KeyPressed" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
+<BorderPane fx:id="bdpn_background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="440" minWidth="600" onKeyPressed="#KeyPressed" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #ffe4c4;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
    <bottom>
       <HBox prefHeight="13.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
          <children>
@@ -42,9 +43,9 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" text="New" onAction="#newGame" />
-                  <MenuItem mnemonicParsing="false" text="Save" onAction="#saveGame"/>
-                  <MenuItem mnemonicParsing="false" text="Load" onAction="#loadGame"/>
+              <MenuItem mnemonicParsing="false" onAction="#newGame" text="New" />
+                  <MenuItem mnemonicParsing="false" onAction="#saveGame" text="Save" />
+                  <MenuItem mnemonicParsing="false" onAction="#loadGame" text="Load" />
             </items>
           </Menu>
             <Menu mnemonicParsing="false" text="Options">
@@ -60,20 +61,20 @@
                   </Menu>
               </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="Exit">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Save And Exit" />
-                  <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit Without Saving" />
-              </items>
-            </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
-              <MenuItem mnemonicParsing="false" text="Instructions" />
+              <MenuItem mnemonicParsing="false" onAction="#Help" text="Instructions" />
             </items>
           </Menu>
             <Menu mnemonicParsing="false" text="About">
               <items>
                 <MenuItem mnemonicParsing="false" onAction="#About" text="About" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Exit">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Save And Exit" />
+                  <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit Without Saving" />
               </items>
             </Menu>
         </menus>
@@ -103,16 +104,25 @@
                      <GridPane.margin>
                         <Insets left="4.0" />
                      </GridPane.margin>
+                     <font>
+                        <Font size="13.0" />
+                     </font>
                   </Text>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Columns:" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets left="4.0" />
                      </GridPane.margin>
+                     <font>
+                        <Font size="13.0" />
+                     </font>
                   </Text>
                   <Button fx:id="btn_newMaze" mnemonicParsing="false" onAction="#newGame" prefHeight="36.0" prefWidth="142.0" text="New Maze" GridPane.columnSpan="2" GridPane.rowIndex="3">
                      <GridPane.margin>
                         <Insets left="7.0" />
                      </GridPane.margin>
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
                   </Button>
                   <CheckBox mnemonicParsing="false" selected="true" text="Bind Proportions" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
                      <GridPane.margin>
@@ -147,9 +157,9 @@
                   </ToggleButton>
                </children>
             </GridPane>
-            <VBox prefHeight="71.0" prefWidth="164.0">
+            <VBox prefHeight="75.0" prefWidth="164.0">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Position" textAlignment="CENTER" underline="true" wrappingWidth="136.9830665588379" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Position:" textAlignment="CENTER" underline="true" wrappingWidth="124.98306655883789" />
                   <Label fx:id="lbl_rowsNum" text="0">
                      <VBox.margin>
                         <Insets left="40.0" />
@@ -174,7 +184,7 @@
               <MazeDisplayer fx:id="mazeDisplayer" height="600.0" width="600.0" />
           </children>
           <padding>
-              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
           </padding>
       </Pane>
    </center>
