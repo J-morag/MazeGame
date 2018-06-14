@@ -96,7 +96,7 @@ public class MyModel  extends Observable implements IModel {
     public int[][] getMaze() {
         //create a copy of the maze map
         int[][] mazeMap = new int[maze.getMazeMap().length][maze.getMazeMap()[0].length];
-        for (int i = 0; i <maze.getMazeMap().length ; i++) {
+        for (int i = 0; i <maze.getMazeMap().length ; i++) {  //TODO put the deep copy in Maze. fix getAllPossibleStates accordingly
             mazeMap[i] = maze.getMazeMap()[i].clone();
         }
         //mark the goal position
@@ -159,6 +159,11 @@ public class MyModel  extends Observable implements IModel {
                 else
                     characterPositionColumn--;
                 break;
+
+        }
+        if (characterPositionRow == maze.getGoalPosition().getRowIndex() && characterPositionColumn == maze.getGoalPosition().getColumnIndex()){
+            setChanged();
+            notifyObservers(MyViewModel.EventType.VICTORY);
         }
         setChanged();
         notifyObservers(MyViewModel.EventType.MOVEMENT);

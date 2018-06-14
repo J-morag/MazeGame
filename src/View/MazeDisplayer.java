@@ -37,7 +37,6 @@ public class MazeDisplayer extends Canvas {
 
     public void setSolution(int[][] solution){
         this.solution = solution;
-        this.solutionVisible = true;
     }
 
 
@@ -49,6 +48,19 @@ public class MazeDisplayer extends Canvas {
     public void showSolution(){
         this.solutionVisible = true;
         redraw();
+    }
+
+    public void setVictory(){
+        double canvasHeight = getHeight();
+        double canvasWidth = getWidth();
+        try {
+            Image victoryImage = new Image(new FileInputStream(ImageFileNameVictory.get()));
+            GraphicsContext gc = getGraphicsContext2D();
+            gc.clearRect(0, 0, getWidth(), getHeight());
+            gc.drawImage(victoryImage, 0, 0, canvasWidth, canvasHeight);
+        } catch (FileNotFoundException e) {
+            //e.printStackTrace();
+        }
     }
 
     public void animationCharacterHurt(){
@@ -98,7 +110,7 @@ public class MazeDisplayer extends Canvas {
                 //Draw Maze
                 for (int i = 0; i < maze[0].length; i++) {
                     for (int j = 0; j < maze.length; j++) {
-                        if(solutionVisible && 1 == solution[j][i]){//draw solution
+                        if(solutionVisible && 1 == solution[j][i] && !(maze[j][i] == 2)){//draw solution
                             gc.drawImage(floorImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
                             gc.drawImage(solutionImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
                         }
@@ -115,8 +127,6 @@ public class MazeDisplayer extends Canvas {
                 }
 
                 //Draw Character
-                //gc.setFill(Color.RED);
-                //gc.fillOval(characterPositionColumn * cellHeight, characterPositionRow * cellWidth, cellHeight, cellWidth);
                 gc.drawImage(characterImage, characterPositionColumn * cellHeight, characterPositionRow * cellWidth, cellHeight, cellWidth);
             } catch (FileNotFoundException e) {
                 //e.printStackTrace();
@@ -131,6 +141,7 @@ public class MazeDisplayer extends Canvas {
     private StringProperty imageFileNameFloor = new SimpleStringProperty("resources/Images/floor1.jpg");
     private StringProperty imageFileNameSolution = new SimpleStringProperty("resources/Images/path1.png");
     private StringProperty imageFileNameGoal = new SimpleStringProperty("resources/Images/goal1.png");
+    private StringProperty ImageFileNameVictory = new SimpleStringProperty("resources/Images/victory1.jpg");
 
     public String getImageFileNameWall() {
         return ImageFileNameWall.get();
