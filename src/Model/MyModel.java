@@ -187,9 +187,9 @@ public class MyModel  extends Observable implements IModel {
                         toServer.writeObject(maze);
                         toServer.flush();
                         mazeSolution = (Solution)fromServer.readObject();
-                        if(mazeSolution == null){
+                        if(mazeSolution == null || mazeSolution.toString() == ""){
                             setChanged();
-                            notifyObservers("Solution is null");
+                            notifyObservers("Solution does not exist");
                             return;
                         }
                     } catch (Exception e) {
