@@ -66,7 +66,7 @@ public class MyViewModel extends Observable implements Observer{
     }
 
     public void generateSolution(){
-        model.getSolution();
+        model.solve();
     }
 
     public void moveCharacter(KeyCode movement){

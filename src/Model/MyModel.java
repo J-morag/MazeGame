@@ -199,22 +199,17 @@ public class MyModel  extends Observable implements IModel {
     }
     @Override
     public void solve() {
-        clientThreadPool.execute(() -> {
-            try {
+//        clientThreadPool.execute(() -> {
+//            try {
                 CommunicateWithServer_SolveSearchProblem();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
             setChanged();
             notifyObservers(MyViewModel.EventType.SOLUTION);
-        });
+//        });
     }
 
-    @Override
-    public Solution getSolution() {
-        CommunicateWithServer_SolveSearchProblem();
-        return mazeSolution;
-    }
 
 
 

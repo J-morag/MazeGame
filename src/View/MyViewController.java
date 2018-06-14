@@ -130,7 +130,7 @@ public class MyViewController implements IView{
 
             }
             else if (arg instanceof String){
-
+                showAlert((String)arg);
             }
         }
     }
