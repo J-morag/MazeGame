@@ -163,10 +163,14 @@ public class MyModel  extends Observable implements IModel {
         }
         if (characterPositionRow == maze.getGoalPosition().getRowIndex() && characterPositionColumn == maze.getGoalPosition().getColumnIndex()){
             setChanged();
+            notifyObservers(MyViewModel.EventType.MOVEMENT);
+            setChanged();
             notifyObservers(MyViewModel.EventType.VICTORY);
         }
-        setChanged();
-        notifyObservers(MyViewModel.EventType.MOVEMENT);
+        else{
+            setChanged();
+            notifyObservers(MyViewModel.EventType.MOVEMENT);
+        }
     }
 
     private boolean isPass (int row, int column){
