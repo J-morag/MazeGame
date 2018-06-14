@@ -159,6 +159,54 @@ public class MyModel  extends Observable implements IModel {
                 else
                     characterPositionColumn--;
                 break;
+            case  DIGIT1:
+            case NUMPAD1:
+                if (!(isPass(characterPositionRow+1,characterPositionColumn-1))) {
+                    setChanged();
+                    notifyObservers(MyViewModel.EventType.INVALIDMOVEMENT);
+                    return;
+                }
+                else{
+                    characterPositionRow++;
+                    characterPositionColumn--;
+                }
+                break;
+            case  DIGIT3:
+            case NUMPAD3:
+                if (!(isPass(characterPositionRow+1,characterPositionColumn+1))) {
+                    setChanged();
+                    notifyObservers(MyViewModel.EventType.INVALIDMOVEMENT);
+                    return;
+                }
+                else{
+                    characterPositionRow++;
+                    characterPositionColumn++;
+                }
+                break;
+            case  DIGIT7:
+            case NUMPAD7:
+                if (!(isPass(characterPositionRow-1,characterPositionColumn-1))) {
+                    setChanged();
+                    notifyObservers(MyViewModel.EventType.INVALIDMOVEMENT);
+                    return;
+                }
+                else{
+                    characterPositionRow--;
+                    characterPositionColumn--;
+                }
+                break;
+            case  DIGIT9:
+            case NUMPAD9:
+                if (!(isPass(characterPositionRow-1,characterPositionColumn+1))) {
+                    setChanged();
+                    notifyObservers(MyViewModel.EventType.INVALIDMOVEMENT);
+                    return;
+                }
+                else{
+                    characterPositionRow--;
+                    characterPositionColumn++;
+                }
+                break;
 
         }
         if (characterPositionRow == maze.getGoalPosition().getRowIndex() && characterPositionColumn == maze.getGoalPosition().getColumnIndex()){
