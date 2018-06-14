@@ -29,10 +29,10 @@ public class Main extends Application {
 //        primaryStage.getIcons().add(new Image(getClass().getResource("resources/Images/icon1.jpg").toString()));
         FXMLLoader fxmlLoader = new FXMLLoader();
         Parent root = fxmlLoader.load(getClass().getResource("MyView.fxml").openStream());
-        Scene scene = new Scene(root, 1000, 650);
+        Scene scene = new Scene(root, 800, 650);
         primaryStage.setScene(scene);
         primaryStage.setMinHeight(440);
-        primaryStage.setMinWidth(600);
+        primaryStage.setMinWidth(550);
         //--------------
         MyViewController view = fxmlLoader.getController();
         viewC = view;

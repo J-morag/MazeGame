@@ -280,7 +280,7 @@ public class MyModel  extends Observable implements IModel {
         for (AState step:mazeSolutionPath) {
             String[] stepStrArr = step.toString().split(",");
             int row = Integer.parseInt(stepStrArr[0].substring(1));
-            int column = Integer.parseInt(stepStrArr[1].substring(0,1));
+            int column = Integer.parseInt(stepStrArr[1].substring(0,stepStrArr[1].length()-1));
             map[row][column] = 1;
         }
         return map;

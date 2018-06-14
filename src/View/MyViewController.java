@@ -206,13 +206,15 @@ public class MyViewController implements IView{
         scene.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
-//                System.out.println("Width: " + newSceneWidth); //TODO resize maze
+                mazeDisplayer.setHeight(newSceneWidth.intValue()-200);
+                mazeDisplayer.redraw();
             }
         });
         scene.heightProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
-//                System.out.println("Height: " + newSceneHeight); //TODO resize maze
+                mazeDisplayer.setWidth(newSceneHeight.intValue()-50);
+                mazeDisplayer.redraw();
             }
         });
     }

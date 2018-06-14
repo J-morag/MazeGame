@@ -26,8 +26,6 @@ public class MazeDisplayer extends Canvas {
     private int[][] solution;
     private int characterPositionRow = 1;
     private int characterPositionColumn = 1;
-    private int goalPositionRow;
-    private int goalPositionColumn;
     boolean solutionVisible = false;
 
     public void setMaze(int[][] maze) {
@@ -51,15 +49,17 @@ public class MazeDisplayer extends Canvas {
     }
 
     public void setVictory(){
-        double canvasHeight = getHeight();
-        double canvasWidth = getWidth();
-        try {
-            Image victoryImage = new Image(new FileInputStream(ImageFileNameVictory.get()));
-            GraphicsContext gc = getGraphicsContext2D();
-            gc.clearRect(0, 0, getWidth(), getHeight());
-            gc.drawImage(victoryImage, 0, 0, canvasWidth, canvasHeight);
-        } catch (FileNotFoundException e) {
-            //e.printStackTrace();
+        if(null != maze){
+            double canvasHeight = Math.min(getHeight(), getWidth());
+            double canvasWidth = Math.min(getHeight(), getWidth());
+            try {
+                Image victoryImage = new Image(new FileInputStream(ImageFileNameVictory.get()));
+                GraphicsContext gc = getGraphicsContext2D();
+                gc.clearRect(0, 0, getWidth(), getHeight());
+                gc.drawImage(victoryImage, 0, 0, canvasWidth, canvasHeight);
+            } catch (FileNotFoundException e) {
+                //e.printStackTrace();
+            }
         }
     }
 
@@ -92,8 +92,8 @@ public class MazeDisplayer extends Canvas {
 
     public void redraw() {
         if (maze != null) {
-            double canvasHeight = getHeight();
-            double canvasWidth = getWidth();
+            double canvasHeight = Math.min(getHeight(), getWidth());
+            double canvasWidth = Math.min(getHeight(), getWidth());
             double cellHeight = canvasHeight / maze[0].length;
             double cellWidth = canvasWidth / maze.length;
 
