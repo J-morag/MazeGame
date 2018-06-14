@@ -53,6 +53,10 @@ public class MyViewModel extends Observable implements Observer{
                 setChanged();
                 notifyObservers(arg);
             }
+            else if (arg == EventType.VICTORY){
+                setChanged();
+                notifyObservers(arg);
+            }
             else if (arg instanceof String){
                 setChanged();
                 notifyObservers(arg);

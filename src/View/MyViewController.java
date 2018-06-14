@@ -131,6 +131,9 @@ public class MyViewController implements IView{
             else if (arg == EventType.ERRORMESSAGE){
 
             }
+            else if (arg == EventType.VICTORY){
+                mazeDisplayer.setVictory();
+            }
             else if (arg instanceof String){
                 showAlert((String)arg);
             }
