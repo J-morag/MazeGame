@@ -132,6 +132,8 @@ public class MyViewController implements IView{
 
             }
             else if (arg == EventType.VICTORY){
+                tglbtn_showSolution.setDisable(true);
+                btn_flashSolution.setDisable(true);
                 mazeDisplayer.setVictory();
             }
             else if (arg instanceof String){
@@ -143,6 +145,7 @@ public class MyViewController implements IView{
     @Override
     public void newGame() {
         btn_newMaze.setDisable(true);
+        tglbtn_showSolution.setSelected(false);
         try{
             int rows = Integer.valueOf(txtfld_rowsNum.getText());
             int columns = Integer.valueOf(txtfld_columnsNum.getText());
@@ -201,13 +204,15 @@ public class MyViewController implements IView{
         scene.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
-//                System.out.println("Width: " + newSceneWidth); //TODO resize maze
+                mazeDisplayer.setHeight(newSceneWidth.intValue()-200);
+                mazeDisplayer.redraw();
             }
         });
         scene.heightProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
-//                System.out.println("Height: " + newSceneHeight); //TODO resize maze
+                mazeDisplayer.setWidth(newSceneHeight.intValue()-50);
+                mazeDisplayer.redraw();
             }
         });
     }

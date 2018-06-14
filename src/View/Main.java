@@ -29,10 +29,10 @@ public class Main extends Application {
 //        primaryStage.getIcons().add(new Image(getClass().getResource("resources/Images/icon1.jpg").toString()));
         FXMLLoader fxmlLoader = new FXMLLoader();
         Parent root = fxmlLoader.load(getClass().getResource("MyView.fxml").openStream());
-        Scene scene = new Scene(root, 1000, 650);
+        Scene scene = new Scene(root, 800, 650);
         primaryStage.setScene(scene);
         primaryStage.setMinHeight(440);
-        primaryStage.setMinWidth(600);
+        primaryStage.setMinWidth(550);
         //--------------
         MyViewController view = fxmlLoader.getController();
         viewC = view;
@@ -49,7 +49,7 @@ public class Main extends Application {
             public void handle(WindowEvent windowEvent) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Exit?");
-                alert.setContentText("All that wasn't saved will be lost");
+                alert.setContentText("If you haven't saved your maze, it will be lost");
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK){
                     viewC.exit();
