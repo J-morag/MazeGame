@@ -100,4 +100,12 @@ public class MyViewModel extends Observable implements Observer{
     public int[][] getSolution(){
         return model.solutionOnMap();
     }
+
+    public void load(String pathFile){
+        model.load(pathFile);
+    }
+
+    public void save(String pathFile){
+        model.save(pathFile);
+    }
 }

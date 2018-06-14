@@ -22,10 +22,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.util.Observable;
 
 public class MyViewController implements IView{
@@ -43,7 +45,7 @@ public class MyViewController implements IView{
     public BorderPane bdpn_background;
 
     public MazeDisplayer mazeDisplayer = new MazeDisplayer();
-    private String invalidRowsOrColumnsMessage = "Rows and Columns must be numbers, equal to or greater than 5.";
+    private final String invalidRowsOrColumnsMessage = "Rows and Columns must be numbers, equal to or greater than 5.";
 
     public void setViewModel(MyViewModel viewModel) {
         this.viewModel = viewModel;
@@ -86,8 +88,8 @@ public class MyViewController implements IView{
     public void hideSolution(){
         mazeDisplayer.hideSolution();
     }
-    private void animationInvalidMovement(){
-        System.out.println("You don' goofed");
+    private void animationInvalidMovement() {
+        mazeDisplayer.animationCharacterHurt();
 //        final Timeline timeline = new Timeline();
 //        timeline.setCycleCount(Timeline.INDEFINITE);
 //        timeline.setAutoReverse(true);
@@ -244,15 +246,6 @@ public class MyViewController implements IView{
     }
 
 
-
-
-
-
-    @Override
-    public void solve() {
-
-    }
-
     @Override
     public void exit() {
         viewModel.exit();
@@ -262,11 +255,25 @@ public class MyViewController implements IView{
 
     @Override
     public void saveGame() {
-
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Maze");
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        File maze = fileChooser.showSaveDialog(btn_newMaze.getScene().getWindow());
+        if (maze != null)
+            viewModel.save(maze.toString());
     }
 
     @Override
     public void loadGame() {
-
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose Maze File");
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        File maze = fileChooser.showOpenDialog( btn_newMaze.getScene().getWindow());
+        if(null != maze){
+            lbl_statusText.setText("Loading maze...");
+            viewModel.load(maze.toString());
+        }
+        lbl_statusText.setText("Solving maze...");
+        viewModel.generateSolution();
     }
 }

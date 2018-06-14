@@ -30,10 +30,10 @@ public class MyModel  extends Observable implements IModel {
     private ExecutorService clientThreadPool = Executors.newCachedThreadPool();
 
     public MyModel() {
-        maze = new Maze();
-        characterPositionRow = maze.getStartPosition().getRowIndex();
-        characterPositionColumn = maze.getStartPosition().getColumnIndex();
-        mazeSolution = new Solution();
+//        maze = new Maze();
+//        characterPositionRow = maze.getStartPosition().getRowIndex();
+//        characterPositionColumn = maze.getStartPosition().getColumnIndex();
+//        mazeSolution = new Solution();
 
         Server.Configurations.load("resources/config.properties");
         strategyGenerateServer = new ServerStrategyGenerateMaze();
@@ -94,7 +94,12 @@ public class MyModel  extends Observable implements IModel {
 
     @Override
     public int[][] getMaze() {
-        int[][] mazeMap = maze.getMazeMap();
+        //create a copy of the maze map
+        int[][] mazeMap = new int[maze.getMazeMap().length][maze.getMazeMap()[0].length];
+        for (int i = 0; i <maze.getMazeMap().length ; i++) {
+            mazeMap[i] = maze.getMazeMap()[i].clone();
+        }
+        //mark the goal position
         mazeMap[maze.getGoalPosition().getRowIndex()][maze.getGoalPosition().getColumnIndex()] = 2;
         return mazeMap;
     }
@@ -197,17 +202,12 @@ public class MyModel  extends Observable implements IModel {
             e.printStackTrace();
         }
     }
+
     @Override
     public void solve() {
-//        clientThreadPool.execute(() -> {
-//            try {
-                CommunicateWithServer_SolveSearchProblem();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-            setChanged();
-            notifyObservers(MyViewModel.EventType.SOLUTION);
-//        });
+        CommunicateWithServer_SolveSearchProblem();
+        setChanged();
+        notifyObservers(MyViewModel.EventType.SOLUTION);
     }
 
 
@@ -258,10 +258,17 @@ public class MyModel  extends Observable implements IModel {
             characterPositionColumn = maze.getStartPosition().getColumnIndex();
             inputFile.close();
             inFileObj.close();
+            setChanged();
+            notifyObservers(MyViewModel.EventType.MAZE);
         } catch (IOException e) {
             e.printStackTrace();
+            setChanged();
+            notifyObservers("Error: cannot open file");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        } catch (Exception e){
+            setChanged();
+            notifyObservers("Error: corrupted maze file");
         }
     }
 

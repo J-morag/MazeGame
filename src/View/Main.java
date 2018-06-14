@@ -49,6 +49,7 @@ public class Main extends Application {
             public void handle(WindowEvent windowEvent) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Exit?");
+                alert.setContentText("All that wasn't saved will be lost");
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK){
                     viewC.exit();

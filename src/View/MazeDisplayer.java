@@ -51,6 +51,19 @@ public class MazeDisplayer extends Canvas {
         redraw();
     }
 
+    public void animationCharacterHurt(){
+        try {
+            StringProperty tmp = ImageFileNameCharacter;
+            ImageFileNameCharacter = imageFileNameCharacterHurt;
+            redraw();
+            ImageFileNameCharacter = tmp;
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void setCharacterPosition(int row, int column) {
         characterPositionRow = row;
         characterPositionColumn = column;
@@ -112,11 +125,12 @@ public class MazeDisplayer extends Canvas {
     }
 
     // Properties
-    private StringProperty ImageFileNameWall = new SimpleStringProperty();
-    private StringProperty ImageFileNameCharacter = new SimpleStringProperty();
+    private StringProperty ImageFileNameWall = new SimpleStringProperty("resources/Images/wall1.jpg");
+    private StringProperty ImageFileNameCharacter = new SimpleStringProperty("resources/Images/character1.png");
+    private StringProperty imageFileNameCharacterHurt = new SimpleStringProperty("resources/Images/CharacterHurt1.png");
     private StringProperty imageFileNameFloor = new SimpleStringProperty("resources/Images/floor1.jpg");
-    private StringProperty imageFileNameSolution = new SimpleStringProperty("resources/Images/path1.jpg");
-    private StringProperty imageFileNameGoal = new SimpleStringProperty("resources/Images/goal1.jpg");
+    private StringProperty imageFileNameSolution = new SimpleStringProperty("resources/Images/path1.png");
+    private StringProperty imageFileNameGoal = new SimpleStringProperty("resources/Images/goal1.png");
 
     public String getImageFileNameWall() {
         return ImageFileNameWall.get();
