@@ -94,8 +94,8 @@ public class MazeDisplayer extends Canvas {
         if (maze != null) {
             double canvasHeight = getHeight();
             double canvasWidth = getWidth();
-            double cellHeight = canvasHeight / maze.length;
-            double cellWidth = canvasWidth / maze[0].length;
+            double cellHeight = canvasHeight / maze[0].length;
+            double cellWidth = canvasWidth / maze.length;
 
             try {
                 Image wallImage = new Image(new FileInputStream(ImageFileNameWall.get()));

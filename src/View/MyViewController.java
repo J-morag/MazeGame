@@ -132,6 +132,8 @@ public class MyViewController implements IView{
 
             }
             else if (arg == EventType.VICTORY){
+                tglbtn_showSolution.setDisable(true);
+                btn_flashSolution.setDisable(true);
                 mazeDisplayer.setVictory();
             }
             else if (arg instanceof String){
@@ -143,6 +145,7 @@ public class MyViewController implements IView{
     @Override
     public void newGame() {
         btn_newMaze.setDisable(true);
+        tglbtn_showSolution.setSelected(false);
         try{
             int rows = Integer.valueOf(txtfld_rowsNum.getText());
             int columns = Integer.valueOf(txtfld_columnsNum.getText());
