@@ -23,10 +23,12 @@ public class MazeDisplayer extends Canvas {
     private int[][] solution;
     private int characterPositionRow = 1;
     private int characterPositionColumn = 1;
-    boolean solutionVisible = false;
+    private boolean solutionVisible = false;
+    private boolean isVictory = false;
 
     public void setMaze(int[][] maze) {
         this.maze = maze;
+        isVictory = false;
         redraw();
     }
 
@@ -58,6 +60,7 @@ public class MazeDisplayer extends Canvas {
                 //e.printStackTrace();
             }
         }
+        isVictory = true;
     }
 
     public void animationCharacterHurt(){
@@ -88,7 +91,7 @@ public class MazeDisplayer extends Canvas {
     }
 
     public void redraw() {
-        if (maze != null) {
+        if (maze != null && isVictory == false) {
             double canvasHeight = Math.min(getHeight(), getWidth());
             double canvasWidth = Math.min(getHeight(), getWidth());
             double cellHeight = canvasHeight / maze[0].length;

@@ -6,13 +6,17 @@ import algorithms.search.Solution;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -29,6 +33,8 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.util.Observable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MyViewController implements IView{
 
@@ -110,11 +116,41 @@ public class MyViewController implements IView{
     @Override
     public void update(Observable o, Object arg) {
         if (o == viewModel) {
-            if (arg == EventType.MAZE){
-                setMaze(viewModel.getMaze());
-                positionCharacter();
-                btn_newMaze.setDisable(false);
-                lbl_statusText.setText("Ready");
+            if (arg == EventType.MAZE){ //new maze to display
+                lbl_statusText.setText("Drawing maze...");//update status indicator
+
+                //draw maze after ui updates status indicator
+                Task<Void> drawMaze = new Task<Void>() {
+                    @Override
+                    public Void call() {
+                        //create a delay for status text to update
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        //draw maze in javaFX thread
+                        Platform.runLater(() -> {
+                            setMaze(viewModel.getMaze());
+                            positionCharacter();
+
+                            //solve maze in separate task. will result in another update() with EventType.SOLUTION as arg.
+                            lbl_statusText.setText("Solving maze...");
+                            Task<Void> solve = new Task<Void>() {
+                                @Override
+                                public Void call() {
+                                    viewModel.generateSolution();
+                                    return null ;
+                                }
+                            };
+                            new Thread(solve).start();
+                        });
+
+                        return null ;
+                    }
+                };
+                new Thread(drawMaze).start();
             }
             else if (arg == EventType.MOVEMENT ){
                 positionCharacter();
@@ -122,6 +158,7 @@ public class MyViewController implements IView{
             else if (arg == EventType.SOLUTION){
                 setSolution(viewModel.getSolution());
                 lbl_statusText.setText("Ready");
+                btn_newMaze.setDisable(false);
                 btn_flashSolution.setDisable(false);
                 tglbtn_showSolution.setDisable(false);
             }
@@ -142,18 +179,47 @@ public class MyViewController implements IView{
         }
     }
 
+    /**
+     * make a new maze, display it. when the new maze is displayed, a solution will also be generated (not in this method - will be run
+     * in a separate Task, created from update())
+     */
     @Override
     public void newGame() {
         btn_newMaze.setDisable(true);
         tglbtn_showSolution.setSelected(false);
+        tglbtn_showSolution.setDisable(true);
+        btn_flashSolution.setDisable(true);
         try{
             int rows = Integer.valueOf(txtfld_rowsNum.getText());
             int columns = Integer.valueOf(txtfld_columnsNum.getText());
-            lbl_statusText.setText("Generating maze...");
             mazeDisplayer.hideSolution();
-            viewModel.generateMaze(rows, columns);
-            lbl_statusText.setText("Solving maze...");
-            viewModel.generateSolution();
+//            Platform.runLater(() -> lbl_statusText.setText("Generating Maze..."));
+            lbl_statusText.setText("Generating maze...");
+
+//            viewModel.generateMaze(rows, columns);
+//            Platform.runLater(() -> viewModel.generateMaze(rows, columns));
+
+//            ExecutorService generateThenSolve = Executors.newSingleThreadExecutor();
+            Task<Void> generate = new Task<Void>() {
+                @Override
+                public Void call() {
+                    viewModel.generateMaze(rows, columns);
+                    return null ;
+                }
+            };
+            new Thread(generate).start();
+//            generateThenSolve.execute(new Thread(generate));
+//            Task<Void> solve = new Task<Void>() {
+//                @Override
+//                public Void call() {
+//                    viewModel.generateSolution();
+//                    return null ;
+//                }
+//            };
+//            generateThenSolve.execute(new Thread(solve));
+
+//            lbl_statusText.setText("Solving maze...");
+//            viewModel.generateSolution();
         }
         catch(NumberFormatException e){
 //            e.printStackTrace();
@@ -161,6 +227,7 @@ public class MyViewController implements IView{
             btn_newMaze.setDisable(false);
         }
     }
+
 
     private void showAlert(String alertMessage) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

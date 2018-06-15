@@ -7,6 +7,7 @@ import ViewModel.MyViewModel;
 import algorithms.mazeGenerators.Maze;
 import algorithms.search.AState;
 import algorithms.search.Solution;
+import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
 
 import java.io.*;
@@ -59,7 +60,8 @@ public class MyModel  extends Observable implements IModel {
 //                e.printStackTrace();
 //            }
             setChanged();
-            notifyObservers(MyViewModel.EventType.MAZE);
+        Platform.runLater(() -> notifyObservers(MyViewModel.EventType.MAZE));
+
 //        });
     }
 
@@ -264,7 +266,7 @@ public class MyModel  extends Observable implements IModel {
     public void solve() {
         CommunicateWithServer_SolveSearchProblem();
         setChanged();
-        notifyObservers(MyViewModel.EventType.SOLUTION);
+        Platform.runLater(() -> notifyObservers(MyViewModel.EventType.SOLUTION));
     }
 
 
