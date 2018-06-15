@@ -24,6 +24,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
@@ -159,6 +160,7 @@ public class MyViewController implements IView{
                 setSolution(viewModel.getSolution());
                 lbl_statusText.setText("Ready");
                 btn_newMaze.setDisable(false);
+                btn_newMaze.requestFocus();
                 btn_flashSolution.setDisable(false);
                 tglbtn_showSolution.setDisable(false);
             }
@@ -193,13 +195,9 @@ public class MyViewController implements IView{
             int rows = Integer.valueOf(txtfld_rowsNum.getText());
             int columns = Integer.valueOf(txtfld_columnsNum.getText());
             mazeDisplayer.hideSolution();
-//            Platform.runLater(() -> lbl_statusText.setText("Generating Maze..."));
             lbl_statusText.setText("Generating maze...");
 
-//            viewModel.generateMaze(rows, columns);
-//            Platform.runLater(() -> viewModel.generateMaze(rows, columns));
-
-//            ExecutorService generateThenSolve = Executors.newSingleThreadExecutor();
+            //generate in a separate task, to avoid freezing the GUI.
             Task<Void> generate = new Task<Void>() {
                 @Override
                 public Void call() {
@@ -208,23 +206,12 @@ public class MyViewController implements IView{
                 }
             };
             new Thread(generate).start();
-//            generateThenSolve.execute(new Thread(generate));
-//            Task<Void> solve = new Task<Void>() {
-//                @Override
-//                public Void call() {
-//                    viewModel.generateSolution();
-//                    return null ;
-//                }
-//            };
-//            generateThenSolve.execute(new Thread(solve));
-
-//            lbl_statusText.setText("Solving maze...");
-//            viewModel.generateSolution();
         }
         catch(NumberFormatException e){
-//            e.printStackTrace();
             showAlert(invalidRowsOrColumnsMessage);
             btn_newMaze.setDisable(false);
+            tglbtn_showSolution.setDisable(false);
+            btn_flashSolution.setDisable(false);
         }
     }
 
@@ -238,6 +225,9 @@ public class MyViewController implements IView{
     public void KeyPressed(KeyEvent keyEvent) {
         if(keyEvent.getCode().isDigitKey()){
             viewModel.moveCharacter(keyEvent.getCode());
+        }
+        else if(keyEvent.getCode() == KeyCode.ENTER){
+            newGame();
         }
         keyEvent.consume();
     }
