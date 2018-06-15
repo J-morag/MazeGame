@@ -280,7 +280,11 @@ public class MyViewController implements IView{
             stage.setTitle("AboutController");
             FXMLLoader fxmlLoader = new FXMLLoader();
             Parent root = fxmlLoader.load(getClass().getResource("About.fxml").openStream());
-            Scene scene = new Scene(root, 400, 350);
+            Scene scene = new Scene(root, 600, 400);
+            stage.setMinHeight(400);
+            stage.setMinWidth(600);
+            stage.setMaxHeight(400);
+            stage.setMaxWidth(600);
             stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL); //Lock the window until it closes
             stage.show();
