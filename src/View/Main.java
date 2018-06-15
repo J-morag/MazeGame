@@ -10,6 +10,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -33,13 +35,13 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setMinHeight(440);
         primaryStage.setMinWidth(550);
-        //--------------
+
         MyViewController view = fxmlLoader.getController();
         viewC = view;
         view.setResizeEvent(scene);
         view.setViewModel(viewModel);
         viewModel.addObserver(view);
-        //--------------
+
         SetStageCloseEvent(primaryStage);
         primaryStage.show();
     }

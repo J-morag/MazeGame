@@ -1,7 +1,9 @@
 package View;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -25,6 +27,7 @@ public class MazeDisplayer extends Canvas {
     private int characterPositionColumn = 1;
     private boolean solutionVisible = false;
     private boolean isVictory = false;
+    private boolean isAnimating = false;
 
     public void setMaze(int[][] maze) {
         this.maze = maze;
@@ -64,14 +67,35 @@ public class MazeDisplayer extends Canvas {
     }
 
     public void animationCharacterHurt(){
-        try {
-            StringProperty tmp = ImageFileNameCharacter;
-            ImageFileNameCharacter = imageFileNameCharacterHurt;
-            redraw();
-            ImageFileNameCharacter = tmp;
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if(!isAnimating){
+            isAnimating = true;
+            Task<Void> animation = new Task<Void>() {
+                @Override
+                protected Void call(){
+                    for (int i = 0; i <8 ; i++) {
+                        Platform.runLater(() -> {
+                            StringProperty tmp = ImageFileNameCharacter;
+                            ImageFileNameCharacter = imageFileNameCharacterHurt;
+                            redraw();
+                            ImageFileNameCharacter = tmp;
+                        });
+                        try {
+                            Thread.sleep(60);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        redraw();
+                        try {
+                            Thread.sleep(60);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    isAnimating = false;
+                    return null;
+                }
+            };
+            new Thread(animation).start();
         }
     }
 

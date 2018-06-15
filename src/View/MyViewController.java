@@ -2,40 +2,30 @@ package View;
 
 import ViewModel.MyViewModel;
 import ViewModel.MyViewModel.EventType;
-import algorithms.search.Solution;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.io.File;
 import java.util.Observable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class MyViewController implements IView{
 
@@ -53,6 +43,13 @@ public class MyViewController implements IView{
 
     public MazeDisplayer mazeDisplayer = new MazeDisplayer();
     private final String invalidRowsOrColumnsMessage = "Rows and Columns must be numbers, equal to or greater than 5.";
+    final Media track1 = new Media(new File("resources/Sounds/track1.mp3").toURI().toString());
+    final MediaPlayer backgroundMusic = new MediaPlayer(track1);
+    private boolean BGMisPlaying = false;
+    final Media victoryMusic1 = new Media(new File("resources/Sounds/victory1.mp3").toURI().toString());
+    private MediaPlayer victoryMusic = new MediaPlayer(victoryMusic1);
+    final Media ouch1 = new Media(new File("resources/Sounds/ouch1.wav").toURI().toString());
+    private MediaPlayer characterHurtSound = new MediaPlayer(ouch1);
 
     public void setViewModel(MyViewModel viewModel) {
         this.viewModel = viewModel;
@@ -165,12 +162,20 @@ public class MyViewController implements IView{
                 tglbtn_showSolution.setDisable(false);
             }
             else if (arg == EventType.INVALIDMOVEMENT){
+                characterHurtSound.stop();
+                characterHurtSound.setVolume(0.6);
+                characterHurtSound.play();
                 animationInvalidMovement();
             }
             else if (arg == EventType.ERRORMESSAGE){
 
             }
             else if (arg == EventType.VICTORY){
+                backgroundMusic.stop();
+                BGMisPlaying = false;
+                victoryMusic.stop();
+                victoryMusic.setVolume(0.5);
+                victoryMusic.play();
                 tglbtn_showSolution.setDisable(true);
                 btn_flashSolution.setDisable(true);
                 mazeDisplayer.setVictory();
@@ -187,6 +192,18 @@ public class MyViewController implements IView{
      */
     @Override
     public void newGame() {
+
+        //TODO move from here to own method
+        if(!BGMisPlaying){
+            victoryMusic.stop();
+
+            backgroundMusic.setOnEndOfMedia(() -> BGMisPlaying = false );
+            backgroundMusic.setVolume(0.5);
+            backgroundMusic.setAutoPlay(true);
+            backgroundMusic.play();
+            BGMisPlaying = true;
+        }
+
         btn_newMaze.setDisable(true);
         tglbtn_showSolution.setSelected(false);
         tglbtn_showSolution.setDisable(true);
