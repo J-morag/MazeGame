@@ -22,7 +22,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane fx:id="bdpn_background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="440" minWidth="600" onKeyPressed="#KeyPressed" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #48d1cc;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
+<BorderPane fx:id="bdpn_background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="440" minWidth="600" onKeyPressed="#KeyPressed" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #ffe4c4;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
    <bottom>
       <HBox prefHeight="13.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
          <children>

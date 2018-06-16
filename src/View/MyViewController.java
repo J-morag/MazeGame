@@ -92,24 +92,7 @@ public class MyViewController implements IView{
     public void hideSolution(){
         mazeDisplayer.hideSolution();
     }
-    private void animationInvalidMovement() {
-        mazeDisplayer.animationCharacterHurt();
-//        final Timeline timeline = new Timeline();
-//        timeline.setCycleCount(Timeline.INDEFINITE);
-//        timeline.setAutoReverse(true);
-//        final KeyValue kv = new KeyValue(bdpn_background.setStyle("-fx-background-color: #800000;"));
-//        final KeyFrame kf = new KeyFrame(Duration.millis(250), kv);
-//        timeline.getKeyFrames().add(kf);
-//        timeline.play();
-//        bdpn_background.setStyle("-fx-background-color: #800000;");
-//        try {
-//            Thread.sleep(1000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        bdpn_background.setStyle("-fx-background-color: #d5e8ff;");
 
-    }
 
     @Override
     public void update(Observable o, Object arg) {
@@ -165,7 +148,7 @@ public class MyViewController implements IView{
                 characterHurtSound.stop();
                 characterHurtSound.setVolume(0.6);
                 characterHurtSound.play();
-                animationInvalidMovement();
+                mazeDisplayer.animationCharacterHurt();
             }
             else if (arg == EventType.ERRORMESSAGE){
 
@@ -174,7 +157,7 @@ public class MyViewController implements IView{
                 backgroundMusic.stop();
                 BGMisPlaying = false;
                 victoryMusic.stop();
-                victoryMusic.setVolume(0.5);
+                victoryMusic.setVolume(0.4);
                 victoryMusic.play();
                 tglbtn_showSolution.setDisable(true);
                 btn_flashSolution.setDisable(true);
@@ -193,17 +176,6 @@ public class MyViewController implements IView{
     @Override
     public void newGame() {
 
-        //TODO move from here to own method
-        if(!BGMisPlaying){
-            victoryMusic.stop();
-
-            backgroundMusic.setOnEndOfMedia(() -> BGMisPlaying = false );
-            backgroundMusic.setVolume(0.5);
-            backgroundMusic.setAutoPlay(true);
-            backgroundMusic.play();
-            BGMisPlaying = true;
-        }
-
         btn_newMaze.setDisable(true);
         tglbtn_showSolution.setSelected(false);
         tglbtn_showSolution.setDisable(true);
@@ -211,6 +183,7 @@ public class MyViewController implements IView{
         try{
             int rows = Integer.valueOf(txtfld_rowsNum.getText());
             int columns = Integer.valueOf(txtfld_columnsNum.getText());
+            if( rows < 5 || columns < 5) throw new NumberFormatException();
             mazeDisplayer.hideSolution();
             lbl_statusText.setText("Generating maze...");
 
@@ -222,6 +195,7 @@ public class MyViewController implements IView{
                     return null ;
                 }
             };
+            playBGM();
             new Thread(generate).start();
         }
         catch(NumberFormatException e){
@@ -229,6 +203,18 @@ public class MyViewController implements IView{
             btn_newMaze.setDisable(false);
             tglbtn_showSolution.setDisable(false);
             btn_flashSolution.setDisable(false);
+        }
+    }
+
+    private void playBGM() {
+        if(!BGMisPlaying){
+            victoryMusic.stop();
+
+            backgroundMusic.setOnEndOfMedia(() -> BGMisPlaying = false );
+            backgroundMusic.setVolume(0.5);
+            backgroundMusic.setAutoPlay(true);
+            backgroundMusic.play();
+            BGMisPlaying = true;
         }
     }
 
@@ -294,14 +280,14 @@ public class MyViewController implements IView{
     public void About(ActionEvent actionEvent) {
         try {
             Stage stage = new Stage();
-            stage.setTitle("AboutController");
+            stage.setTitle("About");
             FXMLLoader fxmlLoader = new FXMLLoader();
             Parent root = fxmlLoader.load(getClass().getResource("About.fxml").openStream());
-            Scene scene = new Scene(root, 600, 400);
-            stage.setMinHeight(400);
-            stage.setMinWidth(600);
-            stage.setMaxHeight(400);
-            stage.setMaxWidth(600);
+            Scene scene = new Scene(root, 650, 450);
+            stage.setMinHeight(450);
+            stage.setMinWidth(650);
+            stage.setMaxHeight(450);
+            stage.setMaxWidth(650);
             stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL); //Lock the window until it closes
             stage.show();
@@ -313,10 +299,14 @@ public class MyViewController implements IView{
     public void Help(ActionEvent actionEvent) {
         try {
             Stage stage = new Stage();
-            stage.setTitle("HelpController");
+            stage.setTitle("Instructions");
             FXMLLoader fxmlLoader = new FXMLLoader();
             Parent root = fxmlLoader.load(getClass().getResource("Help.fxml").openStream());
-            Scene scene = new Scene(root, 400, 350);
+            Scene scene = new Scene(root, 1000, 590);
+            stage.setMinHeight(590);
+            stage.setMinWidth(1000);
+            stage.setMaxHeight(590);
+            stage.setMaxWidth(1000);
             stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL); //Lock the window until it closes
             stage.show();
