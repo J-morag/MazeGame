@@ -62,6 +62,12 @@ public class MyViewController implements IView, Initializable{
         masterVolume.valueProperty().addListener((observable, oldValue, newValue) -> {
             backgroundMusic.setVolume(masterVolume.getValue()*1.0);
         });
+		backgroundMusic.setOnEndOfMedia(new Runnable() {
+			@Override
+			public void run() {
+        BGMisPlaying = false;
+    }
+});
     }
 
     public void setViewModel(MyViewModel viewModel) {
@@ -225,6 +231,7 @@ public class MyViewController implements IView, Initializable{
 
             backgroundMusic.setOnEndOfMedia(() -> BGMisPlaying = false );
             backgroundMusic.setVolume(masterVolume.getValue()*1.0);
+			backgroundMusic.stop();
             backgroundMusic.setAutoPlay(true);
             backgroundMusic.play();
             BGMisPlaying = true;
