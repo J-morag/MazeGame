@@ -11,10 +11,13 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.Slider;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -25,9 +28,11 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Observable;
+import java.util.ResourceBundle;
 
-public class MyViewController implements IView{
+public class MyViewController implements IView, Initializable{
 
     @FXML
     private MyViewModel viewModel;
@@ -40,6 +45,7 @@ public class MyViewController implements IView{
     public javafx.scene.control.ToggleButton tglbtn_showSolution;
     public Label lbl_statusText;
     public BorderPane bdpn_background;
+    public Slider masterVolume;
 
     public MazeDisplayer mazeDisplayer = new MazeDisplayer();
     private final String invalidRowsOrColumnsMessage = "Rows and Columns must be numbers, equal to or greater than 5.";
@@ -50,6 +56,13 @@ public class MyViewController implements IView{
     private MediaPlayer victoryMusic = new MediaPlayer(victoryMusic1);
     final Media ouch1 = new Media(new File("resources/Sounds/ouch1.wav").toURI().toString());
     private MediaPlayer characterHurtSound = new MediaPlayer(ouch1);
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        masterVolume.valueProperty().addListener((observable, oldValue, newValue) -> {
+            backgroundMusic.setVolume(masterVolume.getValue()*1.0);
+        });
+    }
 
     public void setViewModel(MyViewModel viewModel) {
         this.viewModel = viewModel;
@@ -146,7 +159,7 @@ public class MyViewController implements IView{
             }
             else if (arg == EventType.INVALIDMOVEMENT){
                 characterHurtSound.stop();
-                characterHurtSound.setVolume(0.6);
+                characterHurtSound.setVolume(masterVolume.getValue()*0.5);
                 characterHurtSound.play();
                 mazeDisplayer.animationCharacterHurt();
             }
@@ -157,7 +170,7 @@ public class MyViewController implements IView{
                 backgroundMusic.stop();
                 BGMisPlaying = false;
                 victoryMusic.stop();
-                victoryMusic.setVolume(0.4);
+                victoryMusic.setVolume(masterVolume.getValue()*0.7);
                 victoryMusic.play();
                 tglbtn_showSolution.setDisable(true);
                 btn_flashSolution.setDisable(true);
@@ -211,7 +224,7 @@ public class MyViewController implements IView{
             victoryMusic.stop();
 
             backgroundMusic.setOnEndOfMedia(() -> BGMisPlaying = false );
-            backgroundMusic.setVolume(0.5);
+            backgroundMusic.setVolume(masterVolume.getValue()*1.0);
             backgroundMusic.setAutoPlay(true);
             backgroundMusic.play();
             BGMisPlaying = true;

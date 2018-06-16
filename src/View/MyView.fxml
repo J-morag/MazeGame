@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import View.MazeDisplayer?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.BorderPane?>
@@ -22,7 +20,8 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane fx:id="bdpn_background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="440" minWidth="600" onKeyPressed="#KeyPressed" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #ffe4c4;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
+<?import View.MazeDisplayer?>
+<BorderPane fx:id="bdpn_background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="440" minWidth="600" onKeyPressed="#KeyPressed" prefHeight="477.0" prefWidth="600.0" style="-fx-background-color: #ffe4c4;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
    <bottom>
       <HBox prefHeight="13.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
          <children>
@@ -31,10 +30,6 @@
                   <Insets left="4.0" />
                </HBox.margin>
             </Label>
-            <ProgressBar prefHeight="16.0" prefWidth="467.0" progress="0.0">
-               <padding>
-                  <Insets left="60.0" />
-               </padding></ProgressBar>
          </children>
       </HBox>
    </bottom>
@@ -51,14 +46,6 @@
             <Menu mnemonicParsing="false" text="Options">
               <items>
                 <MenuItem mnemonicParsing="false" onAction="#PropertiesStage" onMenuValidation="#PropertiesStage" text="Properties" />
-                  <Menu mnemonicParsing="false" text="Music Track">
-                    <items>
-                        <CheckMenuItem mnemonicParsing="false" text="Track1" />
-                        <CheckMenuItem mnemonicParsing="false" text="Track2" />
-                        <CheckMenuItem mnemonicParsing="false" text="Track3" />
-                        <CheckMenuItem mnemonicParsing="false" text="Track4" />
-                    </items>
-                  </Menu>
               </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -168,14 +155,16 @@
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Position:" textAlignment="CENTER" underline="true" wrappingWidth="124.98306655883789" />
                   <Label fx:id="lbl_rowsNum" text="0">
                      <VBox.margin>
-                        <Insets left="40.0" />
+                        <Insets left="55.0" />
                      </VBox.margin>
                   </Label>
                   <Label fx:id="lbl_columnsNum" text="0">
                      <VBox.margin>
-                        <Insets left="40.0" />
+                        <Insets left="55.0" />
                      </VBox.margin>
                   </Label>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Volume:" underline="true" wrappingWidth="124.98306655883789" />
+                  <Slider fx:id="masterVolume" min="0.0" max="1.0" value="0.5"/>
                </children>
             </VBox>
          </children>
