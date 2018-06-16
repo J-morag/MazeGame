@@ -122,6 +122,7 @@ public class MyModel  extends Observable implements IModel {
             return;
         }
         switch (movement){
+            case UP:
             case  DIGIT8:
             case NUMPAD8:
                 if (!(isPass(characterPositionRow-1,characterPositionColumn))) {
@@ -131,6 +132,7 @@ public class MyModel  extends Observable implements IModel {
                 }
                 else characterPositionRow--;
                 break;
+            case DOWN:
             case DIGIT2:
             case NUMPAD2:
                 if (!(isPass(characterPositionRow+1,characterPositionColumn))) {
@@ -141,6 +143,7 @@ public class MyModel  extends Observable implements IModel {
                 else
                     characterPositionRow++;
                 break;
+            case RIGHT:
             case DIGIT6:
             case NUMPAD6:
                 if (!(isPass(characterPositionRow,characterPositionColumn+1))) {
@@ -151,6 +154,7 @@ public class MyModel  extends Observable implements IModel {
                 else
                     characterPositionColumn++;
                 break;
+            case LEFT:
             case DIGIT4:
             case NUMPAD4:
                 if (!(isPass(characterPositionRow,characterPositionColumn-1))) {
