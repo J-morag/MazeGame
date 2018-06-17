@@ -1,5 +1,6 @@
 package View;
 
+import Server.Server;
 import ViewModel.MyViewModel;
 import ViewModel.MyViewModel.EventType;
 import javafx.application.Platform;
@@ -28,10 +29,14 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Observable;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 public class MyViewController implements IView, Initializable{
 
@@ -60,6 +65,9 @@ public class MyViewController implements IView, Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        Configurations.load("resources/interface.properties");
+        masterVolume.setValue(Configurations.volume);
+
         masterVolume.valueProperty().addListener((observable, oldValue, newValue) -> {
             backgroundMusic.setVolume(masterVolume.getValue()*1.0);
         });
@@ -370,6 +378,8 @@ public class MyViewController implements IView, Initializable{
 
     @Override
     public void exit() {
+        Configurations.setProperty("volume", masterVolume.getValue()+"");
+        Configurations.store("resources/interface.properties");
         viewModel.exit();
         Stage stage = (Stage) btn_newMaze.getScene().getWindow();
         stage.close();
@@ -399,5 +409,83 @@ public class MyViewController implements IView, Initializable{
         viewModel.generateSolution();
     }
 
+    /**
+     * This static class handles configurations.
+     * Different configuration fields are defined by the enums(static) contained within.
+     * The constructor is private, and all fields are static.
+     * Adding new fields is done by adding a new enum to code as a member, adding it to the switch case in setProperty, and to store method.
+     * adding new options to an existing field (enum) is done by adding the new option to the enum.
+     * I'am pretty sure this class is thread safe.
+     */
+    public static class Configurations {
+        private static double volume = 0.5;
 
+        private Configurations() {
+
+        }
+
+        public static void setProperty(String prop, String value) {
+            try {
+//                switch (prop){
+//                    case "generatorClass":
+//                        generatorClass.setCurrValue(generatorClass.valueOf(value));
+//                    case "searchAlgorithm":
+//                        searchAlgorithm.setCurrValue(searchAlgorithm.valueOf(value));
+//                }
+                if (prop.equals("volume"))
+                    volume = Double.valueOf(value);
+            } catch (IllegalArgumentException e) {
+                System.out.println("attempted to set unrecognized config value " + value + " to field " + prop + ". default value used instead.");
+            }
+        }
+
+        public static void load(String filePath) {
+            Scanner input = null;
+
+            try {
+
+                input = new Scanner(new File(filePath));
+
+                while (input.hasNextLine()) {
+                    final String line = input.nextLine();
+                    String keyAndVal[] = line.split("-");
+
+                    //if correct format
+                    if (2 == keyAndVal.length) {
+                        setProperty(keyAndVal[0], keyAndVal[1]);
+                    }
+                }
+
+
+            } catch (IOException ex) {
+                System.out.println("interface configurations file not found");
+            } finally {
+                if (input != null) {
+                    input.close();
+                }
+            }
+        }
+
+        public static void store(String filePath) {
+            BufferedWriter output = null;
+
+            try {
+
+                output = new BufferedWriter(new FileWriter(filePath));
+
+                output.write("volume" + "-" + volume + '\n');
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } finally {
+                if (output != null) {
+                    try {
+                        output.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
 }

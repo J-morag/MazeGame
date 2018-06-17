@@ -161,7 +161,7 @@
                      </VBox.margin>
                   </Label>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Volume:" underline="true" wrappingWidth="124.98306655883789" />
-                  <Slider fx:id="masterVolume" maxWidth="150" prefWidth="150" min="0.0" max="1.0" value="0.5"/>
+                  <Slider fx:id="masterVolume" maxWidth="150" prefWidth="150" min="0.0" max="1.0"/>
                </children>
             </VBox>
          </children>
