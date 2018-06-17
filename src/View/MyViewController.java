@@ -288,7 +288,6 @@ public class MyViewController implements IView, Initializable{
 
         if(lastDragX>=startX && lastDragX<endX
                 && lastDragY>=startY && lastDragY<endY){ //on character
-            System.out.println("yes");
 
             if(dragEvent.getX()>=endX){
                 viewModel.moveCharacter(KeyCode.NUMPAD6);
