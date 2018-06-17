@@ -20,6 +20,7 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.control.Slider;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -62,12 +63,7 @@ public class MyViewController implements IView, Initializable{
         masterVolume.valueProperty().addListener((observable, oldValue, newValue) -> {
             backgroundMusic.setVolume(masterVolume.getValue()*1.0);
         });
-		backgroundMusic.setOnEndOfMedia(new Runnable() {
-			@Override
-			public void run() {
-        BGMisPlaying = false;
-    }
-});
+		backgroundMusic.setOnEndOfMedia(() -> BGMisPlaying = false);
     }
 
     public void setViewModel(MyViewModel viewModel) {
@@ -245,6 +241,8 @@ public class MyViewController implements IView, Initializable{
         alert.show();
     }
 
+    //key nad mouse captures
+
     public void KeyPressed(KeyEvent keyEvent) {
         if(keyEvent.getCode().isDigitKey()){
             viewModel.moveCharacter(keyEvent.getCode());
@@ -253,6 +251,18 @@ public class MyViewController implements IView, Initializable{
             newGame();
         }
         keyEvent.consume();
+    }
+
+    public void zoomInOutEvent(ScrollEvent scrollEvent) {
+        if (scrollEvent.isControlDown() && scrollEvent.getDeltaY()>0){
+            if(mazeDisplayer.getZoomMultiplier()<3.0)
+                mazeDisplayer.setZoomMultiplier(mazeDisplayer.getZoomMultiplier()+0.1);
+        }
+        else if (scrollEvent.isControlDown() && scrollEvent.getDeltaY()<0){
+            if(mazeDisplayer.getZoomMultiplier()>0.5)
+                mazeDisplayer.setZoomMultiplier(mazeDisplayer.getZoomMultiplier()-0.1);
+        }
+        scrollEvent.consume();
     }
 
     //region String Property for Binding
@@ -385,4 +395,6 @@ public class MyViewController implements IView, Initializable{
         lbl_statusText.setText("Solving maze...");
         viewModel.generateSolution();
     }
+
+
 }

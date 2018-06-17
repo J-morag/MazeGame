@@ -28,6 +28,7 @@ public class MazeDisplayer extends Canvas {
     private boolean solutionVisible = false;
     private boolean isVictory = false;
     private boolean isAnimating = false;
+    private double zoomMultiplier = 1;
 
     public void setMaze(int[][] maze) {
         this.maze = maze;
@@ -39,6 +40,14 @@ public class MazeDisplayer extends Canvas {
         this.solution = solution;
     }
 
+    public void setZoomMultiplier(double zoomMultiplier){
+        this.zoomMultiplier = zoomMultiplier;
+        redraw();
+    }
+
+    public double getZoomMultiplier() {
+        return zoomMultiplier;
+    }
 
     public void hideSolution(){
         this.solutionVisible = false;
@@ -52,8 +61,8 @@ public class MazeDisplayer extends Canvas {
 
     public void setVictory(){
         if(null != maze){
-            double canvasHeight = Math.min(getHeight(), getWidth());
-            double canvasWidth = Math.min(getHeight(), getWidth());
+            double canvasHeight = Math.min(getHeight(), getWidth()) * zoomMultiplier;
+            double canvasWidth = Math.min(getHeight(), getWidth()) * zoomMultiplier;
             try {
                 Image victoryImage = new Image(new FileInputStream(ImageFileNameVictory.get()));
                 GraphicsContext gc = getGraphicsContext2D();
@@ -115,9 +124,9 @@ public class MazeDisplayer extends Canvas {
     }
 
     public void redraw() {
-        if (maze != null && isVictory == false) {
-            double canvasHeight = Math.min(getHeight(), getWidth());
-            double canvasWidth = Math.min(getHeight(), getWidth());
+        if (maze != null && !isVictory) {
+            double canvasHeight = Math.min(getHeight(), getWidth()) * zoomMultiplier;
+            double canvasWidth = Math.min(getHeight(), getWidth()) * zoomMultiplier;
             double cellHeight = canvasHeight / maze[0].length;
             double cellWidth = canvasWidth / maze.length;
 
@@ -153,7 +162,7 @@ public class MazeDisplayer extends Canvas {
                 //Draw Character
                 gc.drawImage(characterImage, characterPositionColumn * cellHeight, characterPositionRow * cellWidth, cellHeight, cellWidth);
             } catch (FileNotFoundException e) {
-                //e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         }
     }
