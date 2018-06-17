@@ -281,16 +281,23 @@ public class MyViewController implements IView, Initializable{
     }
 
     public void dragCharacter(MouseEvent dragEvent){
-        if(lastDragX>=mazeDisplayer.getCharacterMinX() && lastDragX<mazeDisplayer.getCharacterMinX()+mazeDisplayer.getCellWidth()
-                && lastDragY>=mazeDisplayer.getCharacterMinY() && lastDragY<mazeDisplayer.getCharacterMinY()+mazeDisplayer.getCellHeight()){ //on character
-            if(dragEvent.getX()>=mazeDisplayer.getCharacterMinX()+mazeDisplayer.getCellWidth()){
+        double startX = mazeDisplayer.getCharacterMinX();
+        double endX = mazeDisplayer.getCharacterMinX()+mazeDisplayer.getCellHeight();
+        double startY = mazeDisplayer.getCharacterMinY();
+        double endY = mazeDisplayer.getCharacterMinY()+mazeDisplayer.getCellWidth();
+
+        if(lastDragX>=startX && lastDragX<endX
+                && lastDragY>=startY && lastDragY<endY){ //on character
+            System.out.println("yes");
+
+            if(dragEvent.getX()>=endX){
                 viewModel.moveCharacter(KeyCode.NUMPAD6);
             }
-            else if(dragEvent.getX()<mazeDisplayer.getCharacterMinX())
+            else if(dragEvent.getX()<startX)
                 viewModel.moveCharacter(KeyCode.NUMPAD4);
-            else if(dragEvent.getY()>=mazeDisplayer.getCharacterMinY()+mazeDisplayer.getCellHeight())
+            else if(dragEvent.getY()>=endY)
                 viewModel.moveCharacter(KeyCode.NUMPAD2);
-            else if(dragEvent.getY()<mazeDisplayer.getCharacterMinY())
+            else if(dragEvent.getY()<startY)
                 viewModel.moveCharacter(KeyCode.NUMPAD8);
         }
         lastDragX = dragEvent.getX();
