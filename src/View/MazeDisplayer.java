@@ -31,6 +31,11 @@ public class MazeDisplayer extends Canvas {
     private double zoomMultiplier = 1;
     private double shiftX = 0;
     private double shiftY = 0;
+    private double characterMinX;
+    private double characterMinY;
+    private double cellWidth;
+    private double cellHeight;
+
 
     public void setMaze(int[][] maze) {
         this.maze = maze;
@@ -51,6 +56,22 @@ public class MazeDisplayer extends Canvas {
 
     public double getZoomMultiplier() {
         return zoomMultiplier;
+    }
+
+    public double getCharacterMinX(){
+        return characterMinX;
+    }
+
+    public double getCharacterMinY(){
+        return characterMinY;
+    }
+
+    public double getCellWidth() {
+        return cellWidth;
+    }
+
+    public double getCellHeight() {
+        return cellHeight;
     }
 
     public void hideSolution(){
@@ -135,8 +156,8 @@ public class MazeDisplayer extends Canvas {
         if (maze != null && !isVictory) {
             double canvasHeight = Math.min(getHeight(), getWidth()) * zoomMultiplier;
             double canvasWidth = Math.min(getHeight(), getWidth()) * zoomMultiplier;
-            double cellHeight = canvasHeight / maze[0].length;
-            double cellWidth = canvasWidth / maze.length;
+            this.cellHeight = canvasHeight / maze[0].length;
+            this.cellWidth = canvasWidth / maze.length;
 
 
             try {
@@ -149,7 +170,7 @@ public class MazeDisplayer extends Canvas {
                 GraphicsContext gc = getGraphicsContext2D();
                 gc.clearRect(0, 0, getWidth(), getHeight());
 
-                calcShift(cellHeight, cellWidth);
+                calcShift();
 
                 if (!(zoomMultiplier< 1.05 && zoomMultiplier> 0.95)){ //if in zoom, draw walls underneath everything, to avoid having a big empty space where the maze isn't drawn
                     for (int i = 0; i < getHeight()/cellHeight+1; i++) {
@@ -181,14 +202,16 @@ public class MazeDisplayer extends Canvas {
                 }
 
                 //Draw Character
-                gc.drawImage(characterImage, characterPositionColumn * cellHeight +shiftX, characterPositionRow * cellWidth + shiftY, cellHeight, cellWidth);
+                characterMinX = characterPositionColumn * cellHeight +shiftX;
+                characterMinY = characterPositionRow * cellWidth + shiftY;
+                gc.drawImage(characterImage, characterMinX, characterMinY, cellHeight, cellWidth);
             } catch (FileNotFoundException e) {
                 System.out.println(e.getMessage());
             }
         }
     }
 
-    private void calcShift(double cellHeight, double cellWidth){
+    private void calcShift(){
         if (zoomMultiplier< 1.05){
             shiftX = 0;
             shiftY = 0;

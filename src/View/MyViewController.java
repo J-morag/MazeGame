@@ -21,6 +21,7 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.control.Slider;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
@@ -62,6 +63,9 @@ public class MyViewController implements IView, Initializable{
     private MediaPlayer victoryMusic = new MediaPlayer(victoryMusic1);
     final Media ouch1 = new Media(new File("resources/Sounds/ouch1.wav").toURI().toString());
     private MediaPlayer characterHurtSound = new MediaPlayer(ouch1);
+    private double lastDragX = -1;
+    private double lastDragY = -1;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -274,6 +278,23 @@ public class MyViewController implements IView, Initializable{
                 mazeDisplayer.setZoomMultiplier(mazeDisplayer.getZoomMultiplier()-0.1);
         }
         scrollEvent.consume();
+    }
+
+    public void dragCharacter(MouseEvent dragEvent){
+        if(lastDragX>=mazeDisplayer.getCharacterMinX() && lastDragX<mazeDisplayer.getCharacterMinX()+mazeDisplayer.getCellWidth()
+                && lastDragY>=mazeDisplayer.getCharacterMinY() && lastDragY<mazeDisplayer.getCharacterMinY()+mazeDisplayer.getCellHeight()){ //on character
+            if(dragEvent.getX()>=mazeDisplayer.getCharacterMinX()+mazeDisplayer.getCellWidth()){
+                viewModel.moveCharacter(KeyCode.NUMPAD6);
+            }
+            else if(dragEvent.getX()<mazeDisplayer.getCharacterMinX())
+                viewModel.moveCharacter(KeyCode.NUMPAD4);
+            else if(dragEvent.getY()>=mazeDisplayer.getCharacterMinY()+mazeDisplayer.getCellHeight())
+                viewModel.moveCharacter(KeyCode.NUMPAD2);
+            else if(dragEvent.getY()<mazeDisplayer.getCharacterMinY())
+                viewModel.moveCharacter(KeyCode.NUMPAD8);
+        }
+        lastDragX = dragEvent.getX();
+        lastDragY = dragEvent.getY();
     }
 
     //region String Property for Binding
