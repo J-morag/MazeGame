@@ -161,7 +161,7 @@ public class MyViewController implements IView, Initializable{
             }
             else if (arg == EventType.INVALIDMOVEMENT){
                 characterHurtSound.stop();
-                characterHurtSound.setVolume(masterVolume.getValue()*0.5);
+                characterHurtSound.setVolume(masterVolume.getValue()*0.4);
                 characterHurtSound.play();
                 mazeDisplayer.animationCharacterHurt();
             }
@@ -172,7 +172,7 @@ public class MyViewController implements IView, Initializable{
                 backgroundMusic.stop();
                 BGMisPlaying = false;
                 victoryMusic.stop();
-                victoryMusic.setVolume(masterVolume.getValue()*0.7);
+                victoryMusic.setVolume(masterVolume.getValue()*0.5);
                 victoryMusic.play();
                 tglbtn_showSolution.setDisable(true);
                 btn_flashSolution.setDisable(true);
@@ -249,6 +249,9 @@ public class MyViewController implements IView, Initializable{
         }
         else if(keyEvent.getCode() == KeyCode.ENTER){
             newGame();
+        }
+        else if(keyEvent.getCode() == KeyCode.HOME && keyEvent.isControlDown()){
+            mazeDisplayer.setZoomMultiplier(1.0);
         }
         keyEvent.consume();
     }

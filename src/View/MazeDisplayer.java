@@ -29,6 +29,8 @@ public class MazeDisplayer extends Canvas {
     private boolean isVictory = false;
     private boolean isAnimating = false;
     private double zoomMultiplier = 1;
+    private double shiftX = 0;
+    private double shiftY = 0;
 
     public void setMaze(int[][] maze) {
         this.maze = maze;
@@ -41,8 +43,10 @@ public class MazeDisplayer extends Canvas {
     }
 
     public void setZoomMultiplier(double zoomMultiplier){
-        this.zoomMultiplier = zoomMultiplier;
-        redraw();
+        if(!isVictory){
+            this.zoomMultiplier = zoomMultiplier;
+            redraw();
+        }
     }
 
     public double getZoomMultiplier() {
@@ -61,8 +65,10 @@ public class MazeDisplayer extends Canvas {
 
     public void setVictory(){
         if(null != maze){
-            double canvasHeight = Math.min(getHeight(), getWidth()) * zoomMultiplier;
-            double canvasWidth = Math.min(getHeight(), getWidth()) * zoomMultiplier;
+//            characterPositionColumn = 0;
+//            characterPositionRow = 0;
+            double canvasHeight = Math.min(getHeight(), getWidth());
+            double canvasWidth = Math.min(getHeight(), getWidth());
             try {
                 Image victoryImage = new Image(new FileInputStream(ImageFileNameVictory.get()));
                 GraphicsContext gc = getGraphicsContext2D();
@@ -124,11 +130,14 @@ public class MazeDisplayer extends Canvas {
     }
 
     public void redraw() {
+        shiftX = 0;
+        shiftY = 0;
         if (maze != null && !isVictory) {
             double canvasHeight = Math.min(getHeight(), getWidth()) * zoomMultiplier;
             double canvasWidth = Math.min(getHeight(), getWidth()) * zoomMultiplier;
             double cellHeight = canvasHeight / maze[0].length;
             double cellWidth = canvasWidth / maze.length;
+
 
             try {
                 Image wallImage = new Image(new FileInputStream(ImageFileNameWall.get()));
@@ -140,30 +149,59 @@ public class MazeDisplayer extends Canvas {
                 GraphicsContext gc = getGraphicsContext2D();
                 gc.clearRect(0, 0, getWidth(), getHeight());
 
-                //Draw Maze
+                calcShift(cellHeight, cellWidth);
+
+                if (!(zoomMultiplier< 1.05 && zoomMultiplier> 0.95)){ //if in zoom, draw walls underneath everything, to avoid having a big empty space where the maze isn't drawn
+                    for (int i = 0; i < getHeight()/cellHeight+1; i++) {
+                        for (int j = 0; j < getWidth()/cellWidth+1; j++) {
+                            gc.drawImage(wallImage, i * cellHeight + shiftX%1, j * cellWidth + shiftY%1, cellHeight, cellWidth);
+                        }
+                    }
+                }
+
+                //Draw Maze and solution
                 for (int i = 0; i < maze[0].length; i++) {
                     for (int j = 0; j < maze.length; j++) {
+                        double startX = i * cellHeight + shiftX;
+                        double startY = j * cellWidth + shiftY;
                         if(solutionVisible && 1 == solution[j][i] && !(maze[j][i] == 2)){//draw solution
-                            gc.drawImage(floorImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
-                            gc.drawImage(solutionImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
+                            gc.drawImage(floorImage, startX , startY, cellHeight, cellWidth);
+                            gc.drawImage(solutionImage, startX ,startY, cellHeight, cellWidth);
                         }
                         else if (maze[j][i] == 1) {
                             //gc.fillRect(i * cellHeight, j * cellWidth, cellHeight, cellWidth);
-                            gc.drawImage(wallImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
+                            gc.drawImage(wallImage, startX , startY, cellHeight, cellWidth);
                         }
                         else if (maze[j][i] == 2){
-                            gc.drawImage(floorImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
-                            gc.drawImage(goalImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
+                            gc.drawImage(floorImage, startX , startY, cellHeight, cellWidth);
+                            gc.drawImage(goalImage, startX , startY, cellHeight, cellWidth);
                         }
-                        else gc.drawImage(floorImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
+                        else gc.drawImage(floorImage, startX , startY, cellHeight, cellWidth);
                     }
                 }
 
                 //Draw Character
-                gc.drawImage(characterImage, characterPositionColumn * cellHeight, characterPositionRow * cellWidth, cellHeight, cellWidth);
+                gc.drawImage(characterImage, characterPositionColumn * cellHeight +shiftX, characterPositionRow * cellWidth + shiftY, cellHeight, cellWidth);
             } catch (FileNotFoundException e) {
                 System.out.println(e.getMessage());
             }
+        }
+    }
+
+    private void calcShift(double cellHeight, double cellWidth){
+        if (zoomMultiplier< 1.05){
+            shiftX = 0;
+            shiftY = 0;
+        }
+        else if(zoomMultiplier>1.05 && zoomMultiplier<2.05) { //will be added to position of all maze elements
+//                double centerPointX = getHeight()/2/*shift to middle*/ - cellHeight/*character height*/;
+//                double centerPointY = getWidth()/2/*shift to middle*/ - cellWidth/*character width*/;
+            shiftX = (-characterPositionColumn * cellHeight) * (zoomMultiplier - 1)/*center on character*/;
+            shiftY = (-characterPositionRow * cellWidth) * (zoomMultiplier - 1)/*center on character*/;
+        }
+        else {
+            shiftX = (-characterPositionColumn*cellHeight)/*center on character*/;
+            shiftY = (-characterPositionRow*cellWidth)/*center on character*/;
         }
     }
 

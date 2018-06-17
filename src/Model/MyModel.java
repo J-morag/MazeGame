@@ -215,9 +215,9 @@ public class MyModel  extends Observable implements IModel {
                 break;
 
 
-            case HOME:
-                characterPositionRow = maze.getStartPosition().getRowIndex();
-                characterPositionColumn = maze.getStartPosition().getColumnIndex();
+//            case HOME:
+//                characterPositionRow = maze.getStartPosition().getRowIndex();
+//                characterPositionColumn = maze.getStartPosition().getColumnIndex();
         }
         if (characterPositionRow == maze.getGoalPosition().getRowIndex() && characterPositionColumn == maze.getGoalPosition().getColumnIndex()){
             setChanged();
