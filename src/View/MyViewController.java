@@ -198,8 +198,7 @@ public class MyViewController implements IView, Initializable{
      * make a new maze, display it. when the new maze is displayed, a solution will also be generated (not in this method - will be run
      * in a separate Task, created from update())
      */
-    @Override
-    public void newGame() {
+    public void newGame(File maze) {
 
         btn_newMaze.setDisable(true);
         tglbtn_showSolution.setSelected(false);
@@ -212,16 +211,20 @@ public class MyViewController implements IView, Initializable{
             mazeDisplayer.hideSolution();
             lbl_statusText.setText("Generating maze...");
 
-            //generate in a separate task, to avoid freezing the GUI.
-            Task<Void> generate = new Task<Void>() {
-                @Override
-                public Void call() {
-                    viewModel.generateMaze(rows, columns);
-                    return null ;
-                }
-            };
             playBGM();
-            new Thread(generate).start();
+
+            if(null == maze){ //not loading a maze from file - generate maze
+                //generate in a separate task, to avoid freezing the GUI.
+                Task<Void> generate = new Task<Void>() {
+                    @Override
+                    public Void call() {
+                        viewModel.generateMaze(rows, columns);
+                        return null ;
+                    }
+                };
+                new Thread(generate).start();
+            }
+            else viewModel.load(maze.toString()); //load maze from file
         }
         catch(NumberFormatException e){
             showAlert(invalidRowsOrColumnsMessage);
@@ -229,6 +232,11 @@ public class MyViewController implements IView, Initializable{
             tglbtn_showSolution.setDisable(false);
             btn_flashSolution.setDisable(false);
         }
+    }
+
+    @Override
+    public void newGame(){
+        newGame(null);
     }
 
     private void playBGM() {
@@ -420,19 +428,24 @@ public class MyViewController implements IView, Initializable{
             viewModel.save(maze.toString());
     }
 
+    public void saveAndExit() {
+        saveGame();
+        exit();
+    }
+
     @Override
     public void loadGame() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose Maze File");
         fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-        File maze = fileChooser.showOpenDialog( btn_newMaze.getScene().getWindow());
-        if(null != maze){
+        File mazeFile = fileChooser.showOpenDialog( btn_newMaze.getScene().getWindow());
+        if(null != mazeFile){ //file chosen
             lbl_statusText.setText("Loading maze...");
-            viewModel.load(maze.toString());
+            viewModel.load(mazeFile.toString());
         }
-        lbl_statusText.setText("Solving maze...");
-        viewModel.generateSolution();
     }
+
+
 
     /**
      * This static class handles configurations.
