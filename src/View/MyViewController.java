@@ -47,6 +47,7 @@ public class MyViewController implements IView, Initializable{
     public javafx.scene.control.Label lbl_columnsNum;
     public javafx.scene.control.Button btn_newMaze;
     public javafx.scene.control.Button btn_flashSolution;
+    public javafx.scene.control.Button btn_resetZoom;
     public javafx.scene.control.ToggleButton tglbtn_showSolution;
     public Label lbl_statusText;
     public BorderPane bdpn_background;
@@ -269,21 +270,31 @@ public class MyViewController implements IView, Initializable{
             newGame();
         }
         else if(keyEvent.getCode() == KeyCode.HOME && keyEvent.isControlDown()){
-            mazeDisplayer.setZoomMultiplier(1.0);
+            resetZoom();
         }
         keyEvent.consume();
     }
 
     public void zoomInOutEvent(ScrollEvent scrollEvent) {
         if (scrollEvent.isControlDown() && scrollEvent.getDeltaY()>0){
-            if(mazeDisplayer.getZoomMultiplier()<3.0)
+            if(mazeDisplayer.getZoomMultiplier()<3.0){
+                btn_resetZoom.setDisable(false);
                 mazeDisplayer.setZoomMultiplier(mazeDisplayer.getZoomMultiplier()+0.1);
+            }
         }
         else if (scrollEvent.isControlDown() && scrollEvent.getDeltaY()<0){
-            if(mazeDisplayer.getZoomMultiplier()>0.5)
+            if(mazeDisplayer.getZoomMultiplier()>0.5){
+                btn_resetZoom.setDisable(false);
                 mazeDisplayer.setZoomMultiplier(mazeDisplayer.getZoomMultiplier()-0.1);
+            }
         }
         scrollEvent.consume();
+    }
+
+    public void resetZoom(){
+        btn_resetZoom.setDisable(true);
+        mazeDisplayer.setZoomMultiplier(1.0);
+        btn_newMaze.requestFocus();
     }
 
     public void dragCharacter(MouseEvent dragEvent){

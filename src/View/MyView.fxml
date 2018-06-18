@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -21,9 +20,7 @@
 <?import javafx.scene.text.Text?>
 
 <?import View.MazeDisplayer?>
-<BorderPane fx:id="bdpn_background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="440" minWidth="600" prefHeight="477.0" prefWidth="600.0" style="-fx-background-color: #ffe4c4;"
-            onScroll="#zoomInOutEvent" onKeyPressed="#KeyPressed"
-            xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
+<BorderPane fx:id="bdpn_background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="440" minWidth="600" onKeyPressed="#KeyPressed" onScroll="#zoomInOutEvent" prefHeight="477.0" prefWidth="600.0" style="-fx-background-color: #ffe4c4;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
    <bottom>
       <HBox prefHeight="13.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
          <children>
@@ -75,7 +72,7 @@
    <left>
       <VBox prefHeight="680.0" prefWidth="168.0" BorderPane.alignment="CENTER">
          <children>
-            <GridPane prefHeight="213.0" prefWidth="164.0">
+            <GridPane prefHeight="191.0" prefWidth="164.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="102.0" minWidth="10.0" prefWidth="81.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="88.0" minWidth="10.0" prefWidth="81.0" />
@@ -118,7 +115,7 @@
                   <Insets top="10.0" />
                </padding>
             </GridPane>
-            <GridPane prefHeight="131.0" prefWidth="132.0">
+            <GridPane prefHeight="103.0" prefWidth="164.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -149,21 +146,40 @@
             </GridPane>
             <VBox prefHeight="75.0" prefWidth="164.0">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Position:" textAlignment="CENTER" underline="true" wrappingWidth="124.98306655883789" />
-                  <Label fx:id="lbl_rowsNum" text="0">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Position:" underline="true" wrappingWidth="124.98306655883789">
                      <VBox.margin>
-                        <Insets left="55.0" />
-                     </VBox.margin>
-                  </Label>
-                  <Label fx:id="lbl_columnsNum" text="0">
-                     <VBox.margin>
-                        <Insets left="55.0" />
-                     </VBox.margin>
-                  </Label>
+                        <Insets />
+                     </VBox.margin></Text>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Row: " />
+                        <Label fx:id="lbl_rowsNum" text="0" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Column: ">
+                           <HBox.margin>
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                        </Text>
+                        <Label fx:id="lbl_columnsNum" text="0" />
+                     </children>
+                     <padding>
+                        <Insets left="4.0" />
+                     </padding>
+                  </HBox>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Volume:" underline="true" wrappingWidth="124.98306655883789" />
-                  <Slider fx:id="masterVolume" maxWidth="150" prefWidth="150" min="0.0" max="1.0"/>
+                  <Slider fx:id="masterVolume" max="1.0" maxWidth="150" min="0.0" prefWidth="150" />
                </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
             </VBox>
+            <Button onAction="#resetZoom" disable="true"  fx:id="btn_resetZoom" mnemonicParsing="false" text="Reset Zoom">
+               <VBox.margin>
+                  <Insets left="30.0" top="20"/>
+               </VBox.margin>
+                <font>
+                    <Font name="System Bold" size="12.0" />
+                </font>
+            </Button>
          </children>
          <padding>
             <Insets left="4.0" />
@@ -171,7 +187,7 @@
       </VBox>
    </left>
    <center>
-      <Pane BorderPane.alignment="CENTER" >
+      <Pane BorderPane.alignment="CENTER">
           <children>
               <MazeDisplayer fx:id="mazeDisplayer" height="600.0" width="600.0"
                              onMouseDragged="#dragCharacter" />
