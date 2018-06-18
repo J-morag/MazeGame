@@ -1,6 +1,5 @@
 package View;
 
-import Server.Server;
 import ViewModel.MyViewModel;
 import ViewModel.MyViewModel.EventType;
 import javafx.application.Platform;
@@ -17,7 +16,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.Slider;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -333,14 +331,14 @@ public class MyViewController implements IView, Initializable{
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
                 mazeDisplayer.setHeight(newSceneWidth.intValue()-200);
-                mazeDisplayer.redraw();
+                mazeDisplayer.redrawAll();
             }
         });
         scene.heightProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
                 mazeDisplayer.setWidth(newSceneHeight.intValue()-50);
-                mazeDisplayer.redraw();
+                mazeDisplayer.redrawAll();
             }
         });
     }

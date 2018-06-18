@@ -4,15 +4,10 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.concurrent.Task;
-import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -35,12 +30,31 @@ public class MazeDisplayer extends Canvas {
     private double characterMinY;
     private double cellWidth;
     private double cellHeight;
+    private Image wallImage;
+    private Image floorImage;
+    private Image characterImage;
+    private Image characterHurtImage;
+    private Image solutionImage;
+    private Image goalImage;
 
+
+    public MazeDisplayer(){
+        try {
+            wallImage = new Image(new FileInputStream(ImageFileNameWall.get()));
+            floorImage = new Image(new FileInputStream(imageFileNameFloor.get()));
+            characterImage = new Image(new FileInputStream(ImageFileNameCharacter.get()));
+            characterHurtImage = new Image(new FileInputStream(imageFileNameCharacterHurt.get()));
+            solutionImage = new Image(new FileInputStream(imageFileNameSolution.get()));
+            goalImage = new Image(new FileInputStream(imageFileNameGoal.get()));
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     public void setMaze(int[][] maze) {
         this.maze = maze;
         isVictory = false;
-        redraw();
+        redrawAll();
     }
 
     public void setSolution(int[][] solution){
@@ -50,7 +64,7 @@ public class MazeDisplayer extends Canvas {
     public void setZoomMultiplier(double zoomMultiplier){
         if(!isVictory){
             this.zoomMultiplier = zoomMultiplier;
-            redraw();
+            redrawAll();
         }
     }
 
@@ -76,12 +90,12 @@ public class MazeDisplayer extends Canvas {
 
     public void hideSolution(){
         this.solutionVisible = false;
-        redraw();
+        redrawAll();
     }
 
     public void showSolution(){
         this.solutionVisible = true;
-        redraw();
+        redrawAll();
     }
 
     public void setVictory(){
@@ -108,19 +122,21 @@ public class MazeDisplayer extends Canvas {
             Task<Void> animation = new Task<Void>() {
                 @Override
                 protected Void call(){
+                    Image tmp = characterImage;
                     for (int i = 0; i <8 ; i++) {
+
                         Platform.runLater(() -> {
-                            StringProperty tmp = ImageFileNameCharacter;
-                            ImageFileNameCharacter = imageFileNameCharacterHurt;
-                            redraw();
-                            ImageFileNameCharacter = tmp;
+                            characterImage = characterHurtImage;
+                            redrawCharacter(characterPositionRow, characterPositionColumn);
                         });
                         try {
                             Thread.sleep(60);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        redraw();
+
+                        characterImage = tmp;
+                        redrawCharacter(characterPositionRow, characterPositionColumn);
                         try {
                             Thread.sleep(60);
                         } catch (InterruptedException e) {
@@ -137,9 +153,11 @@ public class MazeDisplayer extends Canvas {
 
 
     public void setCharacterPosition(int row, int column) {
+        int prevCharacterPositionRow = characterPositionRow;
+        int prevCharacterPositionColumn = characterPositionColumn;
         characterPositionRow = row;
         characterPositionColumn = column;
-        redraw();
+        redrawCharacter(prevCharacterPositionRow, prevCharacterPositionColumn);
     }
 
     public int getCharacterPositionRow() {
@@ -150,64 +168,78 @@ public class MazeDisplayer extends Canvas {
         return characterPositionColumn;
     }
 
-    public void redraw() {
-        shiftX = 0;
-        shiftY = 0;
+    public void redrawAll() {
         if (maze != null && !isVictory) {
             double canvasHeight = Math.min(getHeight(), getWidth()) * zoomMultiplier;
             double canvasWidth = Math.min(getHeight(), getWidth()) * zoomMultiplier;
             this.cellHeight = canvasHeight / maze[0].length;
             this.cellWidth = canvasWidth / maze.length;
 
+            GraphicsContext gc = getGraphicsContext2D();
+            gc.clearRect(0, 0, getWidth(), getHeight());
 
-            try {
-                Image wallImage = new Image(new FileInputStream(ImageFileNameWall.get()));
-                Image floorImage = new Image(new FileInputStream(imageFileNameFloor.get()));
-                Image characterImage = new Image(new FileInputStream(ImageFileNameCharacter.get()));
-                Image solutionImage = new Image(new FileInputStream(imageFileNameSolution.get()));
-                Image goalImage = new Image(new FileInputStream(imageFileNameGoal.get()));
+            calcShift();
 
-                GraphicsContext gc = getGraphicsContext2D();
-                gc.clearRect(0, 0, getWidth(), getHeight());
-
-                calcShift();
-
-                if (!(zoomMultiplier< 1.05 && zoomMultiplier> 0.95)){ //if in zoom, draw walls underneath everything, to avoid having a big empty space where the maze isn't drawn
-                    for (int i = 0; i < getHeight()/cellHeight+1; i++) {
-                        for (int j = 0; j < getWidth()/cellWidth+1; j++) {
-                            gc.drawImage(wallImage, i * cellHeight + shiftX%1, j * cellWidth + shiftY%1, cellHeight, cellWidth);
-                        }
+            if (!(zoomMultiplier< 1.05 && zoomMultiplier> 0.95)){ //if in zoom, draw walls underneath everything, to avoid having a big empty space where the maze isn't drawn
+                for (int i = 0; i < getHeight()/cellHeight+1; i++) {
+                    for (int j = 0; j < getWidth()/cellWidth+1; j++) {
+                        gc.drawImage(wallImage, i * cellHeight + shiftX%1, j * cellWidth + shiftY%1, cellHeight, cellWidth);
                     }
                 }
-
-                //Draw Maze and solution
-                for (int i = 0; i < maze[0].length; i++) {
-                    for (int j = 0; j < maze.length; j++) {
-                        double startX = i * cellHeight + shiftX;
-                        double startY = j * cellWidth + shiftY;
-                        if(solutionVisible && 1 == solution[j][i] && !(maze[j][i] == 2)){//draw solution
-                            gc.drawImage(floorImage, startX , startY, cellHeight, cellWidth);
-                            gc.drawImage(solutionImage, startX ,startY, cellHeight, cellWidth);
-                        }
-                        else if (maze[j][i] == 1) {
-                            //gc.fillRect(i * cellHeight, j * cellWidth, cellHeight, cellWidth);
-                            gc.drawImage(wallImage, startX , startY, cellHeight, cellWidth);
-                        }
-                        else if (maze[j][i] == 2){
-                            gc.drawImage(floorImage, startX , startY, cellHeight, cellWidth);
-                            gc.drawImage(goalImage, startX , startY, cellHeight, cellWidth);
-                        }
-                        else gc.drawImage(floorImage, startX , startY, cellHeight, cellWidth);
-                    }
-                }
-
-                //Draw Character
-                characterMinX = characterPositionColumn * cellHeight +shiftX;
-                characterMinY = characterPositionRow * cellWidth + shiftY;
-                gc.drawImage(characterImage, characterMinX, characterMinY, cellHeight, cellWidth);
-            } catch (FileNotFoundException e) {
-                System.out.println(e.getMessage());
             }
+
+            //Draw Maze and solution
+            for (int i = 0; i < maze[0].length; i++) {
+                for (int j = 0; j < maze.length; j++) {
+                    double startX = i * cellHeight + shiftX;
+                    double startY = j * cellWidth + shiftY;
+                    if(solutionVisible && 1 == solution[j][i] && !(maze[j][i] == 2)){//draw solution
+                        gc.drawImage(floorImage, startX , startY, cellHeight, cellWidth);
+                        gc.drawImage(solutionImage, startX ,startY, cellHeight, cellWidth);
+                    }
+                    else if (maze[j][i] == 1) {
+                        //gc.fillRect(i * cellHeight, j * cellWidth, cellHeight, cellWidth);
+                        gc.drawImage(wallImage, startX , startY, cellHeight, cellWidth);
+                    }
+                    else if (maze[j][i] == 2){
+                        gc.drawImage(floorImage, startX , startY, cellHeight, cellWidth);
+                        gc.drawImage(goalImage, startX , startY, cellHeight, cellWidth);
+                    }
+                    else gc.drawImage(floorImage, startX , startY, cellHeight, cellWidth);
+                }
+            }
+
+            //Draw Character
+            characterMinX = characterPositionColumn * cellHeight +shiftX;
+            characterMinY = characterPositionRow * cellWidth + shiftY;
+            gc.drawImage(characterImage, characterMinX, characterMinY, cellHeight, cellWidth);
+
+        }
+    }
+
+    private void redrawCharacter( int prevCharacterPositionRow, int prevCharacterPositionColumn) {
+        if (maze != null && !isVictory) {
+
+            GraphicsContext gc = getGraphicsContext2D();
+            calcShift();
+            double startX = prevCharacterPositionColumn * cellHeight + shiftX;
+            double startY = prevCharacterPositionRow * cellWidth + shiftY;
+
+            //Reform abandoned cell
+            if (maze[prevCharacterPositionRow][prevCharacterPositionColumn] == 1) {
+                gc.drawImage(wallImage, startX , startY, cellHeight, cellWidth);
+            }
+            else
+                gc.drawImage(floorImage, startX ,startY, cellHeight, cellWidth);
+
+            if (solutionVisible && solution[prevCharacterPositionColumn][prevCharacterPositionRow] == 1)
+                gc.drawImage(solutionImage, startX ,startY, cellHeight, cellWidth);
+
+            //Draw Character
+            characterMinX = characterPositionColumn * cellHeight +shiftX;
+            characterMinY = characterPositionRow * cellWidth + shiftY;
+            gc.drawImage(floorImage, characterMinX, characterMinY, cellHeight, cellWidth);
+            gc.drawImage(characterImage, characterMinX, characterMinY, cellHeight, cellWidth);
         }
     }
 
