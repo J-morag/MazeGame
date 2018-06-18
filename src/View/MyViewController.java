@@ -77,7 +77,7 @@ public class MyViewController implements IView, Initializable{
         masterVolume.setValue(Configurations.volume);
 
         masterVolume.valueProperty().addListener((observable, oldValue, newValue) -> {
-            backgroundMusic.setVolume(masterVolume.getValue());
+            backgroundMusic.setVolume(getMasterVolume());
         });
 		backgroundMusic.setOnEndOfMedia(() -> BGMisPlaying = false);
     }
@@ -250,7 +250,7 @@ public class MyViewController implements IView, Initializable{
             victoryMusic.stop();
 
             backgroundMusic.setOnEndOfMedia(() -> BGMisPlaying = false );
-            backgroundMusic.setVolume(masterVolume.getValue());
+            backgroundMusic.setVolume(getMasterVolume());
 			backgroundMusic.stop();
             backgroundMusic.setAutoPlay(true);
             backgroundMusic.play();
