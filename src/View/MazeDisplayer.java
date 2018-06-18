@@ -176,6 +176,8 @@ public class MazeDisplayer extends Canvas {
             double canvasWidth = Math.min(getHeight(), getWidth()) * zoomMultiplier;
             this.cellHeight = canvasHeight / maze[0].length;
             this.cellWidth = canvasWidth / maze.length;
+//            this.cellHeight = Math.min(canvasHeight / maze[0].length,canvasWidth / maze.length);
+//            this.cellWidth = Math.min(canvasHeight / maze[0].length,canvasWidth / maze.length);
 
             GraphicsContext gc = getGraphicsContext2D();
             gc.clearRect(0, 0, getWidth(), getHeight());
