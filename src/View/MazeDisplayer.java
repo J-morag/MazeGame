@@ -116,6 +116,16 @@ public class MazeDisplayer extends Canvas {
         isVictory = true;
     }
 
+    public void setCharacterPosition(int row, int column) {
+        int prevCharacterPositionRow = characterPositionRow;
+        int prevCharacterPositionColumn = characterPositionColumn;
+        characterPositionRow = row;
+        characterPositionColumn = column;
+        if (zoomMultiplier< 1.05)
+            redrawCharacter(prevCharacterPositionRow, prevCharacterPositionColumn);
+        else redrawAll();
+    }
+
     public void animationCharacterHurt(){
         if(!isAnimating){
             isAnimating = true;
@@ -151,14 +161,6 @@ public class MazeDisplayer extends Canvas {
         }
     }
 
-
-    public void setCharacterPosition(int row, int column) {
-        int prevCharacterPositionRow = characterPositionRow;
-        int prevCharacterPositionColumn = characterPositionColumn;
-        characterPositionRow = row;
-        characterPositionColumn = column;
-        redrawCharacter(prevCharacterPositionRow, prevCharacterPositionColumn);
-    }
 
     public int getCharacterPositionRow() {
         return characterPositionRow;
@@ -231,14 +233,17 @@ public class MazeDisplayer extends Canvas {
             }
             else
                 gc.drawImage(floorImage, startX ,startY, cellHeight, cellWidth);
-
-            if (solutionVisible && solution[prevCharacterPositionColumn][prevCharacterPositionRow] == 1)
+            if (solutionVisible && solution[prevCharacterPositionRow][prevCharacterPositionColumn] == 1)
                 gc.drawImage(solutionImage, startX ,startY, cellHeight, cellWidth);
 
-            //Draw Character
+
+            //Draw Character and background for character
             characterMinX = characterPositionColumn * cellHeight +shiftX;
             characterMinY = characterPositionRow * cellWidth + shiftY;
             gc.drawImage(floorImage, characterMinX, characterMinY, cellHeight, cellWidth);
+            if (solutionVisible && solution[characterPositionRow][characterPositionColumn] == 1)
+                gc.drawImage(solutionImage, characterMinX ,characterMinY, cellHeight, cellWidth);
+
             gc.drawImage(characterImage, characterMinX, characterMinY, cellHeight, cellWidth);
         }
     }
