@@ -15,6 +15,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import java.io.File;
 import java.util.Optional;
 
 public class Main extends Application {
@@ -28,13 +29,15 @@ public class Main extends Application {
         model.addObserver(viewModel);
 
         primaryStage.setTitle("MazeGame");
-//        primaryStage.getIcons().add(new Image(getClass().getResource("resources/Images/icon1.jpg").toString()));
+        try{
+            primaryStage.getIcons().add(new Image(new File("resources/icon1.jpg").toURI().toString()));
+        } catch (Exception e){ System.out.println(e.getMessage()); }
         FXMLLoader fxmlLoader = new FXMLLoader();
         Parent root = fxmlLoader.load(getClass().getResource("MyView.fxml").openStream());
         Scene scene = new Scene(root, 800, 650);
         primaryStage.setScene(scene);
-        primaryStage.setMinHeight(475);
-        primaryStage.setMinWidth(550);
+//        primaryStage.setMinHeight(475);
+//        primaryStage.setMinWidth(550);
 
         MyViewController view = fxmlLoader.getController();
         viewC = view;

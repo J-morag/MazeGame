@@ -1,6 +1,5 @@
 package View;
 
-import Server.Server;
 import ViewModel.MyViewModel;
 import ViewModel.MyViewModel.EventType;
 import javafx.application.Platform;
@@ -17,7 +16,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.Slider;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -49,22 +47,28 @@ public class MyViewController implements IView, Initializable{
     public javafx.scene.control.Label lbl_columnsNum;
     public javafx.scene.control.Button btn_newMaze;
     public javafx.scene.control.Button btn_flashSolution;
+    public javafx.scene.control.Button btn_resetZoom;
+    public javafx.scene.control.RadioButton btn_mute;
     public javafx.scene.control.ToggleButton tglbtn_showSolution;
     public Label lbl_statusText;
     public BorderPane bdpn_background;
     public Slider masterVolume;
 
+    private int themeID = 1;
     public MazeDisplayer mazeDisplayer = new MazeDisplayer();
     private final String invalidRowsOrColumnsMessage = "Rows and Columns must be numbers, equal to or greater than 5.";
-    final Media track1 = new Media(new File("resources/Sounds/track1.mp3").toURI().toString());
+    final Media track1 = new Media(new File("resources/theme"+themeID+"/Sounds/track1.mp3").toURI().toString());
     final MediaPlayer backgroundMusic = new MediaPlayer(track1);
     private boolean BGMisPlaying = false;
-    final Media victoryMusic1 = new Media(new File("resources/Sounds/victory1.mp3").toURI().toString());
+    final Media victoryMusic1 = new Media(new File("resources/theme"+themeID+"/Sounds/victory1.mp3").toURI().toString());
     private MediaPlayer victoryMusic = new MediaPlayer(victoryMusic1);
-    final Media ouch1 = new Media(new File("resources/Sounds/ouch1.wav").toURI().toString());
+    final Media ouch1 = new Media(new File("resources/theme"+themeID+"/Sounds/ouch1.wav").toURI().toString());
     private MediaPlayer characterHurtSound = new MediaPlayer(ouch1);
     private double lastDragX = -1;
     private double lastDragY = -1;
+    private final double victoryMusicVolumeMultiplier = 0.5;
+    private final double characterHurtSoundVolumeMultiplier = 0.4;
+
 
 
     @Override
@@ -73,7 +77,7 @@ public class MyViewController implements IView, Initializable{
         masterVolume.setValue(Configurations.volume);
 
         masterVolume.valueProperty().addListener((observable, oldValue, newValue) -> {
-            backgroundMusic.setVolume(masterVolume.getValue()*1.0);
+            backgroundMusic.setVolume(masterVolume.getValue());
         });
 		backgroundMusic.setOnEndOfMedia(() -> BGMisPlaying = false);
     }
@@ -89,7 +93,7 @@ public class MyViewController implements IView, Initializable{
     }
 
     public void setMaze(int[][] maze) {
-        mazeDisplayer.setMaze(maze);
+        mazeDisplayer.setMaze(maze, themeID);
     }
     public void setSolution(int[][] solution) {
         mazeDisplayer.setSolution(solution);
@@ -173,7 +177,7 @@ public class MyViewController implements IView, Initializable{
             }
             else if (arg == EventType.INVALIDMOVEMENT){
                 characterHurtSound.stop();
-                characterHurtSound.setVolume(masterVolume.getValue()*0.4);
+                characterHurtSound.setVolume(getMasterVolume()*characterHurtSoundVolumeMultiplier);
                 characterHurtSound.play();
                 mazeDisplayer.animationCharacterHurt();
             }
@@ -184,7 +188,7 @@ public class MyViewController implements IView, Initializable{
                 backgroundMusic.stop();
                 BGMisPlaying = false;
                 victoryMusic.stop();
-                victoryMusic.setVolume(masterVolume.getValue()*0.5);
+                victoryMusic.setVolume(getMasterVolume()*victoryMusicVolumeMultiplier);
                 victoryMusic.play();
                 tglbtn_showSolution.setDisable(true);
                 btn_flashSolution.setDisable(true);
@@ -200,8 +204,7 @@ public class MyViewController implements IView, Initializable{
      * make a new maze, display it. when the new maze is displayed, a solution will also be generated (not in this method - will be run
      * in a separate Task, created from update())
      */
-    @Override
-    public void newGame() {
+    public void newGame(File maze) {
 
         btn_newMaze.setDisable(true);
         tglbtn_showSolution.setSelected(false);
@@ -214,16 +217,20 @@ public class MyViewController implements IView, Initializable{
             mazeDisplayer.hideSolution();
             lbl_statusText.setText("Generating maze...");
 
-            //generate in a separate task, to avoid freezing the GUI.
-            Task<Void> generate = new Task<Void>() {
-                @Override
-                public Void call() {
-                    viewModel.generateMaze(rows, columns);
-                    return null ;
-                }
-            };
             playBGM();
-            new Thread(generate).start();
+
+            if(null == maze){ //not loading a maze from file - generate maze
+                //generate in a separate task, to avoid freezing the GUI.
+                Task<Void> generate = new Task<Void>() {
+                    @Override
+                    public Void call() {
+                        viewModel.generateMaze(rows, columns);
+                        return null ;
+                    }
+                };
+                new Thread(generate).start();
+            }
+            else viewModel.load(maze.toString()); //load maze from file
         }
         catch(NumberFormatException e){
             showAlert(invalidRowsOrColumnsMessage);
@@ -233,17 +240,32 @@ public class MyViewController implements IView, Initializable{
         }
     }
 
+    @Override
+    public void newGame(){
+        newGame(null);
+    }
+
     private void playBGM() {
         if(!BGMisPlaying){
             victoryMusic.stop();
 
             backgroundMusic.setOnEndOfMedia(() -> BGMisPlaying = false );
-            backgroundMusic.setVolume(masterVolume.getValue()*1.0);
+            backgroundMusic.setVolume(masterVolume.getValue());
 			backgroundMusic.stop();
             backgroundMusic.setAutoPlay(true);
             backgroundMusic.play();
             BGMisPlaying = true;
         }
+    }
+
+    public void muteAudio(){
+        backgroundMusic.setVolume(getMasterVolume());
+        victoryMusic.setVolume(getMasterVolume());
+        characterHurtSound.setVolume(getMasterVolume());
+    }
+
+    private double getMasterVolume(){
+        return masterVolume.getValue()*((btn_mute.isSelected()) ? 0 : 1);
     }
 
 
@@ -263,21 +285,31 @@ public class MyViewController implements IView, Initializable{
             newGame();
         }
         else if(keyEvent.getCode() == KeyCode.HOME && keyEvent.isControlDown()){
-            mazeDisplayer.setZoomMultiplier(1.0);
+            resetZoom();
         }
         keyEvent.consume();
     }
 
     public void zoomInOutEvent(ScrollEvent scrollEvent) {
         if (scrollEvent.isControlDown() && scrollEvent.getDeltaY()>0){
-            if(mazeDisplayer.getZoomMultiplier()<3.0)
+            if(mazeDisplayer.getZoomMultiplier()<3.0){
+                btn_resetZoom.setDisable(false);
                 mazeDisplayer.setZoomMultiplier(mazeDisplayer.getZoomMultiplier()+0.1);
+            }
         }
         else if (scrollEvent.isControlDown() && scrollEvent.getDeltaY()<0){
-            if(mazeDisplayer.getZoomMultiplier()>0.5)
+            if(mazeDisplayer.getZoomMultiplier()>0.5){
+                btn_resetZoom.setDisable(false);
                 mazeDisplayer.setZoomMultiplier(mazeDisplayer.getZoomMultiplier()-0.1);
+            }
         }
         scrollEvent.consume();
+    }
+
+    public void resetZoom(){
+        btn_resetZoom.setDisable(true);
+        mazeDisplayer.setZoomMultiplier(1.0);
+        btn_newMaze.requestFocus();
     }
 
     public void dragCharacter(MouseEvent dragEvent){
@@ -333,14 +365,14 @@ public class MyViewController implements IView, Initializable{
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
                 mazeDisplayer.setHeight(newSceneWidth.intValue()-200);
-                mazeDisplayer.redraw();
+                mazeDisplayer.redrawAll();
             }
         });
         scene.heightProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
                 mazeDisplayer.setWidth(newSceneHeight.intValue()-50);
-                mazeDisplayer.redraw();
+                mazeDisplayer.redrawAll();
             }
         });
     }
@@ -422,19 +454,24 @@ public class MyViewController implements IView, Initializable{
             viewModel.save(maze.toString());
     }
 
+    public void saveAndExit() {
+        saveGame();
+        exit();
+    }
+
     @Override
     public void loadGame() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose Maze File");
         fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-        File maze = fileChooser.showOpenDialog( btn_newMaze.getScene().getWindow());
-        if(null != maze){
+        File mazeFile = fileChooser.showOpenDialog( btn_newMaze.getScene().getWindow());
+        if(null != mazeFile){ //file chosen
             lbl_statusText.setText("Loading maze...");
-            viewModel.load(maze.toString());
+            viewModel.load(mazeFile.toString());
         }
-        lbl_statusText.setText("Solving maze...");
-        viewModel.generateSolution();
     }
+
+
 
     /**
      * This static class handles configurations.
