@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import View.MazeDisplayer?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -20,8 +21,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<?import View.MazeDisplayer?>
-<BorderPane fx:id="bdpn_background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="440" minWidth="600" onKeyPressed="#KeyPressed" onScroll="#zoomInOutEvent" prefHeight="477.0" prefWidth="600.0" style="-fx-background-color: #ffe9cf;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
+<BorderPane fx:id="bdpn_background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="440" minWidth="600" onKeyPressed="#KeyPressed" onScroll="#zoomInOutEvent" prefHeight="477.0" prefWidth="600.0" style="-fx-background-color: #ffe9cf;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
    <bottom>
       <HBox prefHeight="13.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
          <children>
@@ -46,6 +46,12 @@
             <Menu mnemonicParsing="false" text="Options">
               <items>
                 <MenuItem mnemonicParsing="false" onAction="#PropertiesStage" onMenuValidation="#PropertiesStage" text="Properties" />
+                  <Menu mnemonicParsing="false" text="Change theme">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#setTheme1" text="Theme1" />
+                        <MenuItem mnemonicParsing="false" onAction="#setTheme2" text="Theme2" />
+                    </items>
+                  </Menu>
               </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -195,8 +201,7 @@
    <center>
       <Pane BorderPane.alignment="CENTER">
           <children>
-              <MazeDisplayer fx:id="mazeDisplayer" height="600.0" width="600.0"
-                             onMouseDragged="#dragCharacter" />
+              <MazeDisplayer fx:id="mazeDisplayer" height="600.0" onMouseDragged="#dragCharacter" width="600.0" />
           </children>
           <padding>
               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

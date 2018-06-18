@@ -57,12 +57,12 @@ public class MyViewController implements IView, Initializable{
     private int themeID = 1;
     public MazeDisplayer mazeDisplayer = new MazeDisplayer();
     private final String invalidRowsOrColumnsMessage = "Rows and Columns must be numbers, equal to or greater than 5.";
-    final Media track1 = new Media(new File("resources/theme"+themeID+"/Sounds/track1.mp3").toURI().toString());
-    final MediaPlayer backgroundMusic = new MediaPlayer(track1);
+    Media track1 = new Media(new File("resources/theme"+themeID+"/Sounds/track1.mp3").toURI().toString());
+    MediaPlayer backgroundMusic = new MediaPlayer(track1);
     private boolean BGMisPlaying = false;
-    final Media victoryMusic1 = new Media(new File("resources/theme"+themeID+"/Sounds/victory1.mp3").toURI().toString());
+    Media victoryMusic1 = new Media(new File("resources/theme"+themeID+"/Sounds/victory1.mp3").toURI().toString());
     private MediaPlayer victoryMusic = new MediaPlayer(victoryMusic1);
-    final Media ouch1 = new Media(new File("resources/theme"+themeID+"/Sounds/ouch1.wav").toURI().toString());
+    Media ouch1 = new Media(new File("resources/theme"+themeID+"/Sounds/ouch1.wav").toURI().toString());
     private MediaPlayer characterHurtSound = new MediaPlayer(ouch1);
     private double lastDragX = -1;
     private double lastDragY = -1;
@@ -97,6 +97,30 @@ public class MyViewController implements IView, Initializable{
     }
     public void setSolution(int[][] solution) {
         mazeDisplayer.setSolution(solution);
+    }
+
+    private void setTheme (int themeID){
+        this.themeID = themeID;
+        setMusic(themeID);
+        mazeDisplayer.setTheme(themeID);
+        mazeDisplayer.redrawAll();
+    }
+
+    public void setTheme1(ActionEvent actionEvent) {
+        setTheme(1);
+    }
+
+    public void setTheme2(ActionEvent actionEvent) {
+        setTheme(2);
+    }
+
+    private void setMusic (int themeID){
+        track1 = new Media(new File("resources/theme"+themeID+"/Sounds/track1.mp3").toURI().toString());
+        backgroundMusic = new MediaPlayer(track1);
+        BGMisPlaying = false;
+        victoryMusic1 = new Media(new File("resources/theme"+themeID+"/Sounds/victory1.mp3").toURI().toString());
+        MediaPlayer victoryMusic = new MediaPlayer(victoryMusic1);
+        ouch1 = new Media(new File("resources/theme"+themeID+"/Sounds/ouch1.wav").toURI().toString());
     }
 
     private void positionCharacter(){
@@ -470,7 +494,6 @@ public class MyViewController implements IView, Initializable{
             viewModel.load(mazeFile.toString());
         }
     }
-
 
 
     /**
