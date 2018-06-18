@@ -4,60 +4,70 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.AboutController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.AboutController">
    <children>
-      <Label layoutX="6.0" layoutY="4.0" prefHeight="55.0" prefWidth="600.0" text="This is a fun maze game. It was created as part of the course ''Advanced Topics in Programming'' of BGU's SISE department." wrapText="true">
+      <Label layoutX="6.0" layoutY="22.0" prefHeight="55.0" prefWidth="600.0" text="This is a fun maze game. It was created as part of the course ''Advanced Topics in Programming'' of BGU's SISE department." wrapText="true">
          <font>
             <Font size="14.0" />
          </font></Label>
-      <Label layoutX="6.0" layoutY="324.0" prefHeight="55.0" prefWidth="600.0" text="About us: we are Jonathan Morag and Shahar Arad, 2nd years students of Information Systems Engeneering department." wrapText="true">
+      <Label layoutX="7.0" layoutY="314.0" prefHeight="55.0" prefWidth="600.0" text="we are Jonathan Morag and Shahar Arad, 2nd years students of Information Systems Engeneering department." wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="6.0" layoutY="168.0" prefHeight="41.0" prefWidth="368.0" text="# 3 algorithms to solve the maze:" wrapText="true">
+      <Label layoutX="6.0" layoutY="171.0" prefHeight="41.0" prefWidth="368.0" text="# 3 algorithms to solve the maze:" wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="27.0" layoutY="204.0" prefHeight="20.0" prefWidth="174.0" text="1. Best First Search" wrapText="true">
+      <Label layoutX="27.0" layoutY="207.0" prefHeight="20.0" prefWidth="174.0" text="1. Best First Search" wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="27.0" layoutY="224.0" prefHeight="20.0" prefWidth="143.0" text="2. Breadth First Search" wrapText="true">
+      <Label layoutX="27.0" layoutY="227.0" prefHeight="20.0" prefWidth="143.0" text="2. Breadth First Search" wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="27.0" layoutY="244.0" prefHeight="20.0" prefWidth="143.0" text="3. Depth First Search" wrapText="true">
+      <Label layoutX="27.0" layoutY="247.0" prefHeight="20.0" prefWidth="143.0" text="3. Depth First Search" wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="27.0" layoutY="264.0" prefHeight="20.0" prefWidth="143.0" text="4. AStar" wrapText="true">
+      <Label layoutX="27.0" layoutY="267.0" prefHeight="20.0" prefWidth="143.0" text="4. AStar" wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="6.0" layoutY="63.0" prefHeight="41.0" prefWidth="368.0" text="In this game we use:" wrapText="true">
+      <Label layoutX="6.0" layoutY="73.0" prefHeight="41.0" prefWidth="368.0" text="In this game we use:" wrapText="true">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="27.0" layoutY="129.0" prefHeight="20.0" prefWidth="468.0" text="1. Simple Maze - Places walls at random locations, with random lengths." wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="27.0" layoutY="122.0" prefHeight="20.0" prefWidth="468.0" text="1. Simple Maze - Places walls at random locations, with random lengths." wrapText="true">
+      <Label layoutX="27.0" layoutY="149.0" prefHeight="20.0" prefWidth="457.0" text="2. My Maze - Uses a modified version of Kruskal's MST algorithm" wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="27.0" layoutY="142.0" prefHeight="20.0" prefWidth="457.0" text="2. My Maze - Uses a modified version of Kruskal's MST algorithm" wrapText="true">
+      <Label layoutX="6.0" layoutY="95.0" prefHeight="41.0" prefWidth="368.0" text="# 2 algorithms to generate maze:" wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="6.0" layoutY="88.0" prefHeight="41.0" prefWidth="368.0" text="# 2 algorithms to generate maze:" wrapText="true">
+      <Label layoutX="7.0" layoutY="301.0" prefHeight="20.0" prefWidth="94.0" text="About us: " textFill="#ed2b2bd8" wrapText="true">
          <font>
-            <Font size="14.0" />
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="7.0" layoutY="10.0" prefHeight="20.0" prefWidth="117.0" text="About the game: " textFill="#ed4545d9" wrapText="true">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
          </font>
       </Label>
    </children>
