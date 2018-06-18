@@ -20,7 +20,7 @@
 <?import javafx.scene.text.Text?>
 
 <?import View.MazeDisplayer?>
-<BorderPane fx:id="bdpn_background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="440" minWidth="600" onKeyPressed="#KeyPressed" onScroll="#zoomInOutEvent" prefHeight="477.0" prefWidth="600.0" style="-fx-background-color: #ffe4c4;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
+<BorderPane fx:id="bdpn_background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="440" minWidth="600" onKeyPressed="#KeyPressed" onScroll="#zoomInOutEvent" prefHeight="477.0" prefWidth="600.0" style="-fx-background-color: #ffe9cf;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
    <bottom>
       <HBox prefHeight="13.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
          <children>

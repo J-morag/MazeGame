@@ -10,12 +10,12 @@
          <font>
             <Font size="14.0" />
          </font></Label>
-      <Label layoutX="6.0" layoutY="324.0" prefHeight="55.0" prefWidth="600.0" text="About us: we are Jonathan Morag and Shahar Arad, 2nd years students of Information Systems Engeneering department." wrapText="true">
+      <Label layoutX="6.0" layoutY="324.0" prefHeight="55.0" prefWidth="600.0" text="About us: We are Jonathan Morag and Shahar Arad, 2nd years students in the Information Systems Engineering department." wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="6.0" layoutY="168.0" prefHeight="41.0" prefWidth="368.0" text="# 3 algorithms to solve the maze:" wrapText="true">
+      <Label layoutX="6.0" layoutY="168.0" prefHeight="41.0" prefWidth="368.0" text="Three algorithms to solve the maze:" wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
@@ -55,7 +55,7 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="6.0" layoutY="88.0" prefHeight="41.0" prefWidth="368.0" text="# 2 algorithms to generate maze:" wrapText="true">
+      <Label layoutX="6.0" layoutY="88.0" prefHeight="41.0" prefWidth="368.0" text="Two algorithms to generate maze:" wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
