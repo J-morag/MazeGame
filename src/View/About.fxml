@@ -6,18 +6,28 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.AboutController">
    <children>
-      <Label layoutX="6.0" layoutY="4.0" prefHeight="55.0" prefWidth="600.0" text="This is a fun maze game. It was created as part of the course ''Advanced Topics in Programming'', in BGU's SISE department." wrapText="true">
+      <Label layoutX="6.0" layoutY="3.0" prefHeight="15.0" prefWidth="130.0" text="About the game: " textFill="#e12424d9" wrapText="true">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="6.0" layoutY="17.0" prefHeight="55.0" prefWidth="600.0" text="This is a fun maze game. It was created as part of the course ''Advanced Topics in Programming'', in BGU's SISE department." wrapText="true">
          <font>
             <Font size="14.0" />
          </font></Label>
-      <Label layoutX="6.0" layoutY="324.0" prefHeight="55.0" prefWidth="600.0" text="About us: We are Jonathan Morag and Shahar Arad, 2nd years students in the Information Systems Engineering department." wrapText="true">
+       <Label layoutX="6.0" layoutY="310.0" prefHeight="15.0" prefWidth="100.0" text="About us:" textFill="#e12424d9" wrapText="true">
+           <font>
+               <Font name="System Bold Italic" size="14.0" />
+           </font>
+       </Label>
+      <Label layoutX="6.0" layoutY="324.0" prefHeight="55.0" prefWidth="600.0" text="We are Jonathan Morag and Shahar Arad, 2nd years students in the Information Systems Engineering department." wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
       <Label layoutX="6.0" layoutY="168.0" prefHeight="41.0" prefWidth="368.0" text="Three algorithms to solve the maze:" wrapText="true">
          <font>
-            <Font size="14.0" />
+            <Font name="System Bold Italic" size="14.0" />
          </font>
       </Label>
       <Label layoutX="27.0" layoutY="207.0" prefHeight="20.0" prefWidth="174.0" text="1. Best First Search" wrapText="true">
@@ -40,9 +50,9 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="6.0" layoutY="73.0" prefHeight="41.0" prefWidth="368.0" text="In this game we use:" wrapText="true">
+      <Label layoutX="6.0" layoutY="73.0" prefHeight="41.0" prefWidth="368.0" text="In this game we use:" underline="true" wrapText="true">
          <font>
-            <Font name="System Bold" size="14.0" />
+            <Font size="14.0" />
          </font>
       </Label>
       <Label layoutX="27.0" layoutY="129.0" prefHeight="20.0" prefWidth="468.0" text="1. Simple Maze - Places walls at random locations, with random lengths." wrapText="true">
@@ -55,17 +65,7 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="6.0" layoutY="95.0" prefHeight="41.0" prefWidth="368.0" text="# 2 algorithms to generate maze:" wrapText="true">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <Label layoutX="6.0" layoutY="88.0" prefHeight="41.0" prefWidth="368.0" text="Two algorithms to generate maze:" wrapText="true">
-         <font>
-            <Font name="System Bold Italic" size="14.0" />
-         </font>
-      </Label>
-      <Label layoutX="7.0" layoutY="10.0" prefHeight="20.0" prefWidth="117.0" text="About the game: " textFill="#ed4545d9" wrapText="true">
+      <Label layoutX="6.0" layoutY="95.0" prefHeight="41.0" prefWidth="368.0" text="Two algorithms to generate maze:" wrapText="true">
          <font>
             <Font name="System Bold Italic" size="14.0" />
          </font>
