@@ -48,6 +48,7 @@ public class MyViewController implements IView, Initializable{
     public javafx.scene.control.Button btn_newMaze;
     public javafx.scene.control.Button btn_flashSolution;
     public javafx.scene.control.Button btn_resetZoom;
+    public javafx.scene.control.RadioButton btn_mute;
     public javafx.scene.control.ToggleButton tglbtn_showSolution;
     public Label lbl_statusText;
     public BorderPane bdpn_background;
@@ -64,6 +65,9 @@ public class MyViewController implements IView, Initializable{
     private MediaPlayer characterHurtSound = new MediaPlayer(ouch1);
     private double lastDragX = -1;
     private double lastDragY = -1;
+    private final double victoryMusicVolumeMultiplier = 0.5;
+    private final double characterHurtSoundVolumeMultiplier = 0.4;
+
 
 
     @Override
@@ -72,7 +76,7 @@ public class MyViewController implements IView, Initializable{
         masterVolume.setValue(Configurations.volume);
 
         masterVolume.valueProperty().addListener((observable, oldValue, newValue) -> {
-            backgroundMusic.setVolume(masterVolume.getValue()*1.0);
+            backgroundMusic.setVolume(masterVolume.getValue());
         });
 		backgroundMusic.setOnEndOfMedia(() -> BGMisPlaying = false);
     }
@@ -172,7 +176,7 @@ public class MyViewController implements IView, Initializable{
             }
             else if (arg == EventType.INVALIDMOVEMENT){
                 characterHurtSound.stop();
-                characterHurtSound.setVolume(masterVolume.getValue()*0.4);
+                characterHurtSound.setVolume(getMasterVolume()*characterHurtSoundVolumeMultiplier);
                 characterHurtSound.play();
                 mazeDisplayer.animationCharacterHurt();
             }
@@ -183,7 +187,7 @@ public class MyViewController implements IView, Initializable{
                 backgroundMusic.stop();
                 BGMisPlaying = false;
                 victoryMusic.stop();
-                victoryMusic.setVolume(masterVolume.getValue()*0.5);
+                victoryMusic.setVolume(getMasterVolume()*victoryMusicVolumeMultiplier);
                 victoryMusic.play();
                 tglbtn_showSolution.setDisable(true);
                 btn_flashSolution.setDisable(true);
@@ -245,12 +249,22 @@ public class MyViewController implements IView, Initializable{
             victoryMusic.stop();
 
             backgroundMusic.setOnEndOfMedia(() -> BGMisPlaying = false );
-            backgroundMusic.setVolume(masterVolume.getValue()*1.0);
+            backgroundMusic.setVolume(masterVolume.getValue());
 			backgroundMusic.stop();
             backgroundMusic.setAutoPlay(true);
             backgroundMusic.play();
             BGMisPlaying = true;
         }
+    }
+
+    public void muteAudio(){
+        backgroundMusic.setVolume(getMasterVolume());
+        victoryMusic.setVolume(getMasterVolume());
+        characterHurtSound.setVolume(getMasterVolume());
+    }
+
+    private double getMasterVolume(){
+        return masterVolume.getValue()*((btn_mute.isSelected()) ? 0 : 1);
     }
 
 

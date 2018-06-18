@@ -202,7 +202,6 @@ public class MazeDisplayer extends Canvas {
                         gc.drawImage(solutionImage, startX ,startY, cellHeight, cellWidth);
                     }
                     else if (maze[j][i] == 1) {
-                        //gc.fillRect(i * cellHeight, j * cellWidth, cellHeight, cellWidth);
                         gc.drawImage(wallImage, startX , startY, cellHeight, cellWidth);
                     }
                     else if (maze[j][i] == 2){

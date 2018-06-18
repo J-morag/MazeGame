@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
@@ -144,13 +145,13 @@
                   </ToggleButton>
                </children>
             </GridPane>
-            <VBox prefHeight="75.0" prefWidth="164.0">
+            <VBox prefHeight="97.0" prefWidth="164.0">
                <children>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Position:" underline="true" wrappingWidth="124.98306655883789">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin></Text>
-                  <HBox prefHeight="100.0" prefWidth="200.0">
+                  <HBox prefHeight="24.0" prefWidth="164.0">
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Row: " />
                         <Label fx:id="lbl_rowsNum" text="0" />
@@ -167,14 +168,19 @@
                   </HBox>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Volume:" underline="true" wrappingWidth="124.98306655883789" />
                   <Slider fx:id="masterVolume" max="1.0" maxWidth="150" min="0.0" prefWidth="150" />
+                  <RadioButton fx:id="btn_mute" mnemonicParsing="false" onAction="#muteAudio" text="Mute">
+                     <padding>
+                        <Insets left="30.0" />
+                     </padding>
+                  </RadioButton>
                </children>
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
             </VBox>
-            <Button onAction="#resetZoom" disable="true"  fx:id="btn_resetZoom" mnemonicParsing="false" text="Reset Zoom">
+            <Button fx:id="btn_resetZoom" disable="true" mnemonicParsing="false" onAction="#resetZoom" text="Reset Zoom">
                <VBox.margin>
-                  <Insets left="30.0" top="20"/>
+                  <Insets left="30.0" top="20" />
                </VBox.margin>
                 <font>
                     <Font name="System Bold" size="12.0" />
