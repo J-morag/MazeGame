@@ -54,14 +54,15 @@ public class MyViewController implements IView, Initializable{
     public BorderPane bdpn_background;
     public Slider masterVolume;
 
+    private int themeID = 1;
     public MazeDisplayer mazeDisplayer = new MazeDisplayer();
     private final String invalidRowsOrColumnsMessage = "Rows and Columns must be numbers, equal to or greater than 5.";
-    final Media track1 = new Media(new File("resources/Sounds/track1.mp3").toURI().toString());
+    final Media track1 = new Media(new File("resources/theme"+themeID+"/Sounds/track1.mp3").toURI().toString());
     final MediaPlayer backgroundMusic = new MediaPlayer(track1);
     private boolean BGMisPlaying = false;
-    final Media victoryMusic1 = new Media(new File("resources/Sounds/victory1.mp3").toURI().toString());
+    final Media victoryMusic1 = new Media(new File("resources/theme"+themeID+"/Sounds/victory1.mp3").toURI().toString());
     private MediaPlayer victoryMusic = new MediaPlayer(victoryMusic1);
-    final Media ouch1 = new Media(new File("resources/Sounds/ouch1.wav").toURI().toString());
+    final Media ouch1 = new Media(new File("resources/theme"+themeID+"/Sounds/ouch1.wav").toURI().toString());
     private MediaPlayer characterHurtSound = new MediaPlayer(ouch1);
     private double lastDragX = -1;
     private double lastDragY = -1;
@@ -92,7 +93,7 @@ public class MyViewController implements IView, Initializable{
     }
 
     public void setMaze(int[][] maze) {
-        mazeDisplayer.setMaze(maze);
+        mazeDisplayer.setMaze(maze, themeID);
     }
     public void setSolution(int[][] solution) {
         mazeDisplayer.setSolution(solution);

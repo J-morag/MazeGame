@@ -36,9 +36,10 @@ public class MazeDisplayer extends Canvas {
     private Image characterHurtImage;
     private Image solutionImage;
     private Image goalImage;
+    private int themeID = 1;
 
 
-    public MazeDisplayer(){
+    public MazeDisplayer() {
         try {
             wallImage = new Image(new FileInputStream(ImageFileNameWall.get()));
             floorImage = new Image(new FileInputStream(imageFileNameFloor.get()));
@@ -51,10 +52,15 @@ public class MazeDisplayer extends Canvas {
         }
     }
 
-    public void setMaze(int[][] maze) {
+    public void setMaze(int[][] maze, int themeID) {
+        this.themeID = themeID;
         this.maze = maze;
         isVictory = false;
         redrawAll();
+    }
+
+    public void setTheme(int themeID){
+        this.themeID = themeID;
     }
 
     public void setSolution(int[][] solution){
@@ -267,13 +273,13 @@ public class MazeDisplayer extends Canvas {
     }
 
     // Properties
-    private StringProperty ImageFileNameWall = new SimpleStringProperty("resources/Images/wall1.jpg");
-    private StringProperty ImageFileNameCharacter = new SimpleStringProperty("resources/Images/character1.png");
-    private StringProperty imageFileNameCharacterHurt = new SimpleStringProperty("resources/Images/CharacterHurt1.png");
-    private StringProperty imageFileNameFloor = new SimpleStringProperty("resources/Images/floor1.jpg");
-    private StringProperty imageFileNameSolution = new SimpleStringProperty("resources/Images/path1.png");
-    private StringProperty imageFileNameGoal = new SimpleStringProperty("resources/Images/goal1.png");
-    private StringProperty ImageFileNameVictory = new SimpleStringProperty("resources/Images/victory1.jpg");
+    private StringProperty ImageFileNameWall = new SimpleStringProperty("resources/theme"+themeID+"/Images/wall1.jpg");
+    private StringProperty ImageFileNameCharacter = new SimpleStringProperty("resources/theme"+themeID+"/Images/character1.png");
+    private StringProperty imageFileNameCharacterHurt = new SimpleStringProperty("resources/theme"+themeID+"/Images/CharacterHurt1.png");
+    private StringProperty imageFileNameFloor = new SimpleStringProperty("resources/theme"+themeID+"/Images/floor1.jpg");
+    private StringProperty imageFileNameSolution = new SimpleStringProperty("resources/theme"+themeID+"/Images/path1.png");
+    private StringProperty imageFileNameGoal = new SimpleStringProperty("resources/theme"+themeID+"/Images/goal1.png");
+    private StringProperty ImageFileNameVictory = new SimpleStringProperty("resources/theme"+themeID+"/Images/victory1.jpg");
 
     public String getImageFileNameWall() {
         return ImageFileNameWall.get();

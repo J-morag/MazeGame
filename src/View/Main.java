@@ -30,7 +30,7 @@ public class Main extends Application {
 
         primaryStage.setTitle("MazeGame");
         try{
-            primaryStage.getIcons().add(new Image(new File("resources/Images/icon1.jpg").toURI().toString()));
+            primaryStage.getIcons().add(new Image(new File("resources/icon1.jpg").toURI().toString()));
         } catch (Exception e){ System.out.println(e.getMessage()); }
         FXMLLoader fxmlLoader = new FXMLLoader();
         Parent root = fxmlLoader.load(getClass().getResource("MyView.fxml").openStream());
