@@ -14,10 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -51,7 +48,7 @@ public class MyViewController implements IView, Initializable{
     public javafx.scene.control.Button btn_resetZoom;
     public javafx.scene.control.RadioButton btn_mute;
     public javafx.scene.control.ToggleButton tglbtn_showSolution;
-    public CheckMenuItem cmi_hardMode;
+    public ToggleButton tglbtn_hardMode;
     public Label lbl_statusText;
     public BorderPane bdpn_background;
     public Slider masterVolume;
@@ -136,7 +133,7 @@ public class MyViewController implements IView, Initializable{
     }
 
     public void setHardMode(){
-        isHardMode = cmi_hardMode.isSelected();
+        isHardMode = tglbtn_hardMode.isSelected();
         viewModel.setHardMode(isHardMode);
         mazeDisplayer.setHardMode(isHardMode);
         positionEnemy();
