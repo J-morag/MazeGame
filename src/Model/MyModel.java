@@ -5,7 +5,9 @@ import IO.MyDecompressorInputStream;
 import Server.*;
 import ViewModel.MyViewModel;
 import algorithms.mazeGenerators.Maze;
+import algorithms.mazeGenerators.Position;
 import algorithms.search.AState;
+import algorithms.search.MazeState;
 import algorithms.search.Solution;
 import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
@@ -28,14 +30,10 @@ public class MyModel  extends Observable implements IModel {
     private int characterPositionRow;
     private int characterPositionColumn;
     private Solution mazeSolution;
-    private ExecutorService clientThreadPool = Executors.newCachedThreadPool();
+    private Enemy enemy;
+    private boolean isHardMode;
 
     public MyModel() {
-//        maze = new Maze();
-//        characterPositionRow = maze.getStartPosition().getRowIndex();
-//        characterPositionColumn = maze.getStartPosition().getColumnIndex();
-//        mazeSolution = new Solution();
-
         Server.Configurations.load("resources/config.properties");
         strategyGenerateServer = new ServerStrategyGenerateMaze();
         generateServer = new Server(5400, 7000,strategyGenerateServer);
@@ -46,6 +44,10 @@ public class MyModel  extends Observable implements IModel {
         solveServer.start();
     }
 
+    public void setHardMode(boolean on){
+        isHardMode = on;
+    }
+
     @Override
     public void generateMaze(int rows, int columns) {
         if(rows < 5 || columns < 5) {
@@ -53,16 +55,12 @@ public class MyModel  extends Observable implements IModel {
             notifyObservers("Maze dimensions must be at least 5X5");
             return;
         }
-//        clientThreadPool.execute(() -> {
-//            try {
-                CommunicateWithServer_MazeGenerating(rows, columns);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-            setChanged();
-        Platform.runLater(() -> notifyObservers(MyViewModel.EventType.MAZE));
+        CommunicateWithServer_MazeGenerating(rows, columns);
+        setChanged();
 
-//        });
+        enemy = new Enemy(maze);
+
+        Platform.runLater(() -> notifyObservers(MyViewModel.EventType.MAZE));
     }
 
     private void CommunicateWithServer_MazeGenerating(int rows, int columns) {
@@ -117,6 +115,16 @@ public class MyModel  extends Observable implements IModel {
     }
 
     @Override
+    public int getEnemyPositionRow() {
+        return enemy.row;
+    }
+
+    @Override
+    public int getEnemyPositionColumn() {
+        return enemy.column;
+    }
+
+    @Override
     public void moveCharacter(KeyCode movement) {
         if (characterPositionRow == maze.getGoalPosition().getRowIndex() && characterPositionColumn == maze.getGoalPosition().getColumnIndex()){
             return;
@@ -130,7 +138,9 @@ public class MyModel  extends Observable implements IModel {
                     notifyObservers(MyViewModel.EventType.INVALIDMOVEMENT);
                     return;
                 }
-                else characterPositionRow--;
+                else
+                    characterPositionRow--;
+
                 break;
             case DOWN:
             case DIGIT2:
@@ -224,6 +234,16 @@ public class MyModel  extends Observable implements IModel {
             notifyObservers(MyViewModel.EventType.MOVEMENT);
             setChanged();
             notifyObservers(MyViewModel.EventType.VICTORY);
+        }
+        else if (isHardMode && enemy.touchingPlayer(characterPositionRow, characterPositionColumn)){
+            setChanged();
+            notifyObservers(MyViewModel.EventType.LOSS);
+        }
+        if (isHardMode)
+            enemy.move(characterPositionRow, characterPositionColumn);
+        if (isHardMode && enemy.touchingPlayer(characterPositionRow, characterPositionColumn)){
+            setChanged();
+            notifyObservers(MyViewModel.EventType.LOSS);
         }
         else{
             setChanged();
@@ -354,5 +374,73 @@ public class MyModel  extends Observable implements IModel {
     @Override
     public void storeConfigurations() {
         Server.Configurations.store("resources/config.properties");
+    }
+
+    private class Enemy{
+        int row;
+        int column;
+        int prevCharacterRow;
+        int prevCharacterColumn;
+        Maze reversedMaze;
+        Solution pathToTake;
+        public Enemy(Maze maze){
+            //create a copy of the maze map
+            int[][] mazeMap = new int[maze.getMazeMap().length][maze.getMazeMap()[0].length];
+            for (int i = 0; i <maze.getMazeMap().length ; i++) {
+                mazeMap[i] = maze.getMazeMap()[i].clone();
+            }
+            //create maze with same map, and start and end reversed
+            reversedMaze = new Maze(mazeMap, new Position(maze.getGoalPosition()), new Position(maze.getStartPosition()));
+            //initialize prev character positions to initial character position
+            prevCharacterRow = reversedMaze.getGoalPosition().getRowIndex();
+            prevCharacterColumn = reversedMaze.getGoalPosition().getColumnIndex();
+
+            row = reversedMaze.getStartPosition().getRowIndex();
+            column = reversedMaze.getStartPosition().getColumnIndex();
+        }
+
+        protected void move(int characterPositionRow, int characterPositionColumn){
+            reversedMaze = new Maze(reversedMaze.getMazeMap(), new Position(row, column), new Position(prevCharacterRow, prevCharacterColumn));
+            //get path to space before character
+            CommunicateWithServer_SolveSearchProblem();
+
+            if (pathToTake != null){
+                ArrayList<AState> path = pathToTake.getSolutionPath();
+                if(null != path.get(1))
+                row = ((MazeState)path.get(1)).getPosition().getRowIndex();
+                column = ((MazeState)path.get(1)).getPosition().getColumnIndex();
+            }
+            prevCharacterRow = characterPositionRow;
+            prevCharacterColumn = characterPositionColumn;
+        }
+
+        protected boolean touchingPlayer(int characterPositionRow, int characterPositionColumn){
+            return (this.row == characterPositionRow && this.column == characterPositionColumn);
+        }
+
+        private void CommunicateWithServer_SolveSearchProblem() {
+            try {
+                Client client = new Client(InetAddress.getLocalHost(), 5401, new IClientStrategy() {
+                    public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
+                        try {
+                            ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
+                            ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
+                            toServer.flush();
+                            toServer.writeObject(reversedMaze);
+                            toServer.flush();
+                            pathToTake = (Solution)fromServer.readObject();
+                            if(pathToTake == null || pathToTake.toString() == ""){
+                                return;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                client.communicateWithServer();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

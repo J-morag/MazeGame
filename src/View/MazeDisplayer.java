@@ -4,15 +4,13 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.concurrent.Task;
-import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class MazeDisplayer extends Canvas {
 
@@ -20,8 +18,10 @@ public class MazeDisplayer extends Canvas {
     private int[][] solution;
     private int characterPositionRow = 1;
     private int characterPositionColumn = 1;
+    private int enemyPositionRow;
+    private int enemyPositionColumn;
     private boolean solutionVisible = false;
-    private boolean isVictory = false;
+    private boolean isGameOver = false;
     private boolean isAnimating = false;
     private double zoomMultiplier = 1;
     private double shiftX = 0;
@@ -32,11 +32,13 @@ public class MazeDisplayer extends Canvas {
     private double cellHeight;
     private Image wallImage;
     private Image floorImage;
+    private Image enemyImage;
     private Image characterImage;
     private Image characterHurtImage;
     private Image solutionImage;
     private Image goalImage;
     private int themeID = 1;
+    private boolean isHardMode;
 
 
     public MazeDisplayer() {
@@ -46,7 +48,7 @@ public class MazeDisplayer extends Canvas {
     public void setMaze(int[][] maze, int themeID) {
         this.themeID = themeID;
         this.maze = maze;
-        isVictory = false;
+        isGameOver = false;
         redrawAll();
     }
 
@@ -54,22 +56,31 @@ public class MazeDisplayer extends Canvas {
         this.themeID = themeID;
         loadImages();
     }
+    
+    public void setHardMode(boolean on){
+        this.isHardMode = on;
+        redrawAll();
+    }
 
     private void loadImages(){
         ImageFileNameWall = new SimpleStringProperty("resources/theme"+themeID+"/Images/wall1.jpg");
         ImageFileNameCharacter = new SimpleStringProperty("resources/theme"+themeID+"/Images/character1.png");
+        ImageFileNameEnemy = new SimpleStringProperty("resources/theme"+themeID+"/Images/enemy1.png");
         imageFileNameCharacterHurt = new SimpleStringProperty("resources/theme"+themeID+"/Images/CharacterHurt1.png");
         imageFileNameFloor = new SimpleStringProperty("resources/theme"+themeID+"/Images/floor1.jpg");
         imageFileNameSolution = new SimpleStringProperty("resources/theme"+themeID+"/Images/path1.png");
         imageFileNameGoal = new SimpleStringProperty("resources/theme"+themeID+"/Images/goal1.png");
         ImageFileNameVictory = new SimpleStringProperty("resources/theme"+themeID+"/Images/victory1.jpg");
+        ImageFileNameLoss = new SimpleStringProperty("resources/theme"+themeID+"/Images/loss1.png");
         try {
             wallImage = new Image(new FileInputStream(ImageFileNameWall.get()));
             floorImage = new Image(new FileInputStream(imageFileNameFloor.get()));
             characterImage = new Image(new FileInputStream(ImageFileNameCharacter.get()));
+            enemyImage = new Image(new FileInputStream(ImageFileNameEnemy.get()));
             characterHurtImage = new Image(new FileInputStream(imageFileNameCharacterHurt.get()));
             solutionImage = new Image(new FileInputStream(imageFileNameSolution.get()));
             goalImage = new Image(new FileInputStream(imageFileNameGoal.get()));
+
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
         }
@@ -82,7 +93,7 @@ public class MazeDisplayer extends Canvas {
     }
 
     public void setZoomMultiplier(double zoomMultiplier){
-        if(!isVictory){
+        if(!isGameOver){
             this.zoomMultiplier = zoomMultiplier;
             redrawAll();
         }
@@ -120,8 +131,6 @@ public class MazeDisplayer extends Canvas {
 
     public void setVictory(){
         if(null != maze){
-//            characterPositionColumn = 0;
-//            characterPositionRow = 0;
             double canvasHeight = Math.min(getHeight(), getWidth());
             double canvasWidth = Math.min(getHeight(), getWidth());
             try {
@@ -133,7 +142,23 @@ public class MazeDisplayer extends Canvas {
                 //e.printStackTrace();
             }
         }
-        isVictory = true;
+        isGameOver = true;
+    }
+
+    public void setLoss() {
+        if(null != maze){
+            double canvasHeight = Math.min(getHeight(), getWidth());
+            double canvasWidth = Math.min(getHeight(), getWidth());
+            try {
+                Image lossImage = new Image(new FileInputStream(ImageFileNameLoss.get()));
+                GraphicsContext gc = getGraphicsContext2D();
+                gc.clearRect(0, 0, getWidth(), getHeight());
+                gc.drawImage(lossImage, 0, 0, canvasWidth, canvasHeight);
+            } catch (FileNotFoundException e) {
+                //e.printStackTrace();
+            }
+        }
+        isGameOver = true;
     }
 
     public void setCharacterPosition(int row, int column) {
@@ -142,9 +167,26 @@ public class MazeDisplayer extends Canvas {
         characterPositionRow = row;
         characterPositionColumn = column;
         if (zoomMultiplier< 1.05)
-            redrawCharacter(prevCharacterPositionRow, prevCharacterPositionColumn);
+            redrawCharacter(prevCharacterPositionRow, prevCharacterPositionColumn, characterImage);
         else redrawAll();
     }
+
+    public void setEnemyPosition(int row, int column) {
+        if(isHardMode){
+            int prevEnemyPositionRow = enemyPositionRow;
+            int prevEnemyPositionColumn = enemyPositionColumn;
+            if(enemyPositionRow == characterPositionRow && enemyPositionColumn == characterPositionColumn){
+                prevEnemyPositionRow = row;
+                prevEnemyPositionColumn = column;
+            }
+            enemyPositionRow = row;
+            enemyPositionColumn = column;
+            if (zoomMultiplier< 1.05)
+                redrawCharacter(prevEnemyPositionRow, prevEnemyPositionColumn, enemyImage);
+            else redrawAll();
+        }
+    }
+
 
     public void animationCharacterHurt(){
         if(!isAnimating){
@@ -157,7 +199,7 @@ public class MazeDisplayer extends Canvas {
 
                         Platform.runLater(() -> {
                             characterImage = characterHurtImage;
-                            redrawCharacter(characterPositionRow, characterPositionColumn);
+                            redrawCharacter(characterPositionRow, characterPositionColumn, characterImage);
                         });
                         try {
                             Thread.sleep(60);
@@ -166,7 +208,7 @@ public class MazeDisplayer extends Canvas {
                         }
 
                         characterImage = tmp;
-                        redrawCharacter(characterPositionRow, characterPositionColumn);
+                        redrawCharacter(characterPositionRow, characterPositionColumn, characterImage);
                         try {
                             Thread.sleep(60);
                         } catch (InterruptedException e) {
@@ -191,7 +233,7 @@ public class MazeDisplayer extends Canvas {
     }
 
     public void redrawAll() {
-        if (maze != null && !isVictory) {
+        if (maze != null && !isGameOver) {
             double canvasHeight = Math.min(getHeight(), getWidth()) * zoomMultiplier;
             double canvasWidth = Math.min(getHeight(), getWidth()) * zoomMultiplier;
             this.cellHeight = canvasHeight / maze[0].length;
@@ -237,35 +279,56 @@ public class MazeDisplayer extends Canvas {
             characterMinY = characterPositionRow * cellWidth + shiftY;
             gc.drawImage(characterImage, characterMinX, characterMinY, cellHeight, cellWidth);
 
+            //Draw Enemy
+            if(isHardMode){
+                double enemyMinX = enemyPositionColumn * cellHeight +shiftX;
+                double enemyMinY = enemyPositionRow * cellWidth + shiftY;
+                gc.drawImage(enemyImage, enemyMinX, enemyMinY, cellHeight, cellWidth);
+            }
         }
     }
 
-    private void redrawCharacter( int prevCharacterPositionRow, int prevCharacterPositionColumn) {
-        if (maze != null && !isVictory) {
+    private void redrawCharacter(int prevCharacterOrEnemyPositionRow, int prevCharacterOrEnemyPositionColumn, Image characterOrEnemyImage) {
+        if (maze != null && !isGameOver) {
 
             GraphicsContext gc = getGraphicsContext2D();
             calcShift();
-            double startX = prevCharacterPositionColumn * cellHeight + shiftX;
-            double startY = prevCharacterPositionRow * cellWidth + shiftY;
+            double startX = prevCharacterOrEnemyPositionColumn * cellHeight + shiftX;
+            double startY = prevCharacterOrEnemyPositionRow * cellWidth + shiftY;
 
             //Reform abandoned cell
-            if (maze[prevCharacterPositionRow][prevCharacterPositionColumn] == 1) {
+            if (maze[prevCharacterOrEnemyPositionRow][prevCharacterOrEnemyPositionColumn] == 1) {
                 gc.drawImage(wallImage, startX , startY, cellHeight, cellWidth);
             }
             else
                 gc.drawImage(floorImage, startX ,startY, cellHeight, cellWidth);
-            if (solutionVisible && solution[prevCharacterPositionRow][prevCharacterPositionColumn] == 1)
+            if (solutionVisible && solution[prevCharacterOrEnemyPositionRow][prevCharacterOrEnemyPositionColumn] == 1)
                 gc.drawImage(solutionImage, startX ,startY, cellHeight, cellWidth);
+            if (maze[prevCharacterOrEnemyPositionRow][prevCharacterOrEnemyPositionColumn] == 2)
+                gc.drawImage(goalImage, startX, startY, cellHeight, cellWidth);
 
+            if(characterOrEnemyImage == this.characterImage){
+                //Draw Character and background for character
+                characterMinX = characterPositionColumn * cellHeight +shiftX;
+                characterMinY = characterPositionRow * cellWidth + shiftY;
+                gc.drawImage(floorImage, characterMinX, characterMinY, cellHeight, cellWidth);
+                if (solutionVisible && solution[characterPositionRow][characterPositionColumn] == 1)
+                    gc.drawImage(solutionImage, characterMinX ,characterMinY, cellHeight, cellWidth);
 
-            //Draw Character and background for character
-            characterMinX = characterPositionColumn * cellHeight +shiftX;
-            characterMinY = characterPositionRow * cellWidth + shiftY;
-            gc.drawImage(floorImage, characterMinX, characterMinY, cellHeight, cellWidth);
-            if (solutionVisible && solution[characterPositionRow][characterPositionColumn] == 1)
-                gc.drawImage(solutionImage, characterMinX ,characterMinY, cellHeight, cellWidth);
+                gc.drawImage(characterOrEnemyImage, characterMinX, characterMinY, cellHeight, cellWidth);
+            }
+            else{
+                //Draw enemy and background for enemy
+                double minX = enemyPositionColumn * cellHeight +shiftX;
+                double minY = enemyPositionRow * cellWidth + shiftY;
+                gc.drawImage(floorImage, minX, minY, cellHeight, cellWidth);
+                if (solutionVisible && solution[enemyPositionRow][enemyPositionColumn] == 1)
+                    gc.drawImage(solutionImage, minX, minY, cellHeight, cellWidth);
+                if (maze[enemyPositionRow][enemyPositionColumn] == 2)
+                    gc.drawImage(goalImage, minX, minY, cellHeight, cellWidth);
 
-            gc.drawImage(characterImage, characterMinX, characterMinY, cellHeight, cellWidth);
+                gc.drawImage(characterOrEnemyImage, minX, minY, cellHeight, cellWidth);
+            }
         }
     }
 
@@ -289,11 +352,13 @@ public class MazeDisplayer extends Canvas {
     // Properties
     private StringProperty ImageFileNameWall = new SimpleStringProperty("resources/theme"+themeID+"/Images/wall1.jpg");
     private StringProperty ImageFileNameCharacter = new SimpleStringProperty("resources/theme"+themeID+"/Images/character1.png");
+    private StringProperty ImageFileNameEnemy = new SimpleStringProperty("resources/theme"+themeID+"/Images/enemy1.png");
     private StringProperty imageFileNameCharacterHurt = new SimpleStringProperty("resources/theme"+themeID+"/Images/CharacterHurt1.png");
     private StringProperty imageFileNameFloor = new SimpleStringProperty("resources/theme"+themeID+"/Images/floor1.jpg");
     private StringProperty imageFileNameSolution = new SimpleStringProperty("resources/theme"+themeID+"/Images/path1.png");
     private StringProperty imageFileNameGoal = new SimpleStringProperty("resources/theme"+themeID+"/Images/goal1.png");
     private StringProperty ImageFileNameVictory = new SimpleStringProperty("resources/theme"+themeID+"/Images/victory1.jpg");
+    private StringProperty ImageFileNameLoss = new SimpleStringProperty("resources/theme"+themeID+"/Images/loss1.png");
 
     public String getImageFileNameWall() {
         return ImageFileNameWall.get();
@@ -310,6 +375,7 @@ public class MazeDisplayer extends Canvas {
     public void setImageFileNameCharacter(String imageFileNameCharacter) {
         this.ImageFileNameCharacter.set(imageFileNameCharacter);
     }
-    //endregion
+
+
 
 }

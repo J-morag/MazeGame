@@ -16,13 +16,27 @@ public class MyViewModel extends Observable implements Observer{
 
     private int characterPositionRowIndex;
     private int characterPositionColumnIndex;
+    private int enemyPositionRowIndex;
+    private int enemyPositionColumnIndex;
 
     public StringProperty characterPositionRow = new SimpleStringProperty("0"); //For Binding
     public StringProperty characterPositionColumn = new SimpleStringProperty("0"); //For Binding
+
+    public int getEnemyPositionRow() {
+        return enemyPositionRowIndex;
+    }
+
+    public int getEnemyPositionColumn() {
+        return enemyPositionColumnIndex;
+    }
+
+    public void setHardMode(boolean isHardMode) {
+        model.setHardMode(isHardMode);
+    }
 //    public StringProperty mazeGenerationAlgorithmConfig = new SimpleStringProperty("MyMazeGenerator");
 
     public enum EventType{
-        MAZE, SOLUTION, MOVEMENT, INVALIDMOVEMENT, ERRORMESSAGE, MESSAGE, VICTORY
+        MAZE, SOLUTION, MOVEMENT, INVALIDMOVEMENT, ERRORMESSAGE, MESSAGE, VICTORY, LOSS
     }
 
 
@@ -38,30 +52,16 @@ public class MyViewModel extends Observable implements Observer{
                 characterPositionRow.set(characterPositionRowIndex + "");
                 characterPositionColumnIndex = model.getCharacterPositionColumn();
                 characterPositionColumn.set(characterPositionColumnIndex + "");
+                enemyPositionRowIndex = model.getEnemyPositionRow();
+                enemyPositionColumnIndex = model.getEnemyPositionColumn();
                 setChanged();
                 notifyObservers(arg);
             }
-            else if (arg == EventType.SOLUTION){
+            else if (arg == EventType.SOLUTION || arg == EventType.INVALIDMOVEMENT || arg == EventType.ERRORMESSAGE
+                    || arg == EventType.VICTORY || arg == EventType.LOSS || arg instanceof String){
                 setChanged();
                 notifyObservers(arg);
             }
-            else if (arg == EventType.INVALIDMOVEMENT){
-                setChanged();
-                notifyObservers(arg);
-            }
-            else if (arg == EventType.ERRORMESSAGE){
-                setChanged();
-                notifyObservers(arg);
-            }
-            else if (arg == EventType.VICTORY){
-                setChanged();
-                notifyObservers(arg);
-            }
-            else if (arg instanceof String){
-                setChanged();
-                notifyObservers(arg);
-            }
-
         }
     }
 
