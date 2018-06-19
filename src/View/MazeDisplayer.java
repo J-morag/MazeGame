@@ -74,13 +74,36 @@ public class MazeDisplayer extends Canvas {
         ImageFileNameLoss = new SimpleStringProperty("resources/theme"+themeID+"/Images/loss1.png");
         try {
             wallImage = new Image(new FileInputStream(ImageFileNameWall.get()));
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        try {
             floorImage = new Image(new FileInputStream(imageFileNameFloor.get()));
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        try {
             characterImage = new Image(new FileInputStream(ImageFileNameCharacter.get()));
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        try {
             enemyImage = new Image(new FileInputStream(ImageFileNameEnemy.get()));
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        try {
             characterHurtImage = new Image(new FileInputStream(imageFileNameCharacterHurt.get()));
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        try {
             solutionImage = new Image(new FileInputStream(imageFileNameSolution.get()));
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        try {
             goalImage = new Image(new FileInputStream(imageFileNameGoal.get()));
-
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
         }
