@@ -15,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.KeyCode;
@@ -50,6 +51,7 @@ public class MyViewController implements IView, Initializable{
     public javafx.scene.control.Button btn_resetZoom;
     public javafx.scene.control.RadioButton btn_mute;
     public javafx.scene.control.ToggleButton tglbtn_showSolution;
+    public CheckMenuItem cmi_hardMode;
     public Label lbl_statusText;
     public BorderPane bdpn_background;
     public Slider masterVolume;
@@ -68,6 +70,7 @@ public class MyViewController implements IView, Initializable{
     private double lastDragY = -1;
     private final double victoryMusicVolumeMultiplier = 0.5;
     private final double characterHurtSoundVolumeMultiplier = 0.4;
+    private boolean isHardMode = false;
 
 
 
@@ -132,12 +135,25 @@ public class MyViewController implements IView, Initializable{
         characterHurtSound.setVolume(getMasterVolume()*characterHurtSoundVolumeMultiplier);
     }
 
+    public void setHardMode(){
+        isHardMode = cmi_hardMode.isSelected();
+        viewModel.setHardMode(isHardMode);
+        mazeDisplayer.setHardMode(isHardMode);
+        positionEnemy();
+    }
+
     private void positionCharacter(){
         int characterPositionRow = viewModel.getCharacterPositionRow();
         int characterPositionColumn = viewModel.getCharacterPositionColumn();
         mazeDisplayer.setCharacterPosition(characterPositionRow, characterPositionColumn);
         this.characterPositionRow.set(characterPositionRow + "");
         this.characterPositionColumn.set(characterPositionColumn + "");
+    }
+
+    private void positionEnemy(){
+        int enemyPositionRow = viewModel.getEnemyPositionRow();
+        int enemyPositionColumn = viewModel.getEnemyPositionColumn();
+        mazeDisplayer.setEnemyPosition(enemyPositionRow, enemyPositionColumn);
     }
 
     public void toggleSolutionVisibility(ActionEvent actionEvent){
@@ -179,6 +195,7 @@ public class MyViewController implements IView, Initializable{
                         Platform.runLater(() -> {
                             setMaze(viewModel.getMaze());
                             positionCharacter();
+                            if (isHardMode) positionEnemy();
 
                             //solve maze in separate task. will result in another update() with EventType.SOLUTION as arg.
                             lbl_statusText.setText("Solving maze...");
@@ -199,6 +216,7 @@ public class MyViewController implements IView, Initializable{
             }
             else if (arg == EventType.MOVEMENT ){
                 positionCharacter();
+                if (isHardMode) positionEnemy();
             }
             else if (arg == EventType.SOLUTION){
                 setSolution(viewModel.getSolution());
@@ -226,6 +244,16 @@ public class MyViewController implements IView, Initializable{
                 tglbtn_showSolution.setDisable(true);
                 btn_flashSolution.setDisable(true);
                 mazeDisplayer.setVictory();
+            }
+            else if (arg == EventType.LOSS){
+                backgroundMusic.stop();
+                BGMisPlaying = false;
+                characterHurtSound.stop();
+                characterHurtSound.setVolume(getMasterVolume()*characterHurtSoundVolumeMultiplier);
+                characterHurtSound.play();
+                tglbtn_showSolution.setDisable(true);
+                btn_flashSolution.setDisable(true);
+                mazeDisplayer.setLoss();
             }
             else if (arg instanceof String){
                 showAlert((String)arg);
