@@ -119,7 +119,7 @@ public class MyViewController implements IView, Initializable{
         backgroundMusic = new MediaPlayer(track1);
         BGMisPlaying = false;
         victoryMusic1 = new Media(new File("resources/theme"+themeID+"/Sounds/victory1.mp3").toURI().toString());
-        MediaPlayer victoryMusic = new MediaPlayer(victoryMusic1);
+        victoryMusic = new MediaPlayer(victoryMusic1);
         ouch1 = new Media(new File("resources/theme"+themeID+"/Sounds/ouch1.wav").toURI().toString());
     }
 
