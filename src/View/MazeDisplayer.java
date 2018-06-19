@@ -40,6 +40,29 @@ public class MazeDisplayer extends Canvas {
 
 
     public MazeDisplayer() {
+        loadImages();
+    }
+
+    public void setMaze(int[][] maze, int themeID) {
+        this.themeID = themeID;
+        this.maze = maze;
+        isVictory = false;
+        redrawAll();
+    }
+
+    public void setTheme(int themeID){
+        this.themeID = themeID;
+        loadImages();
+    }
+
+    private void loadImages(){
+        ImageFileNameWall = new SimpleStringProperty("resources/theme"+themeID+"/Images/wall1.jpg");
+        ImageFileNameCharacter = new SimpleStringProperty("resources/theme"+themeID+"/Images/character1.png");
+        imageFileNameCharacterHurt = new SimpleStringProperty("resources/theme"+themeID+"/Images/CharacterHurt1.png");
+        imageFileNameFloor = new SimpleStringProperty("resources/theme"+themeID+"/Images/floor1.jpg");
+        imageFileNameSolution = new SimpleStringProperty("resources/theme"+themeID+"/Images/path1.png");
+        imageFileNameGoal = new SimpleStringProperty("resources/theme"+themeID+"/Images/goal1.png");
+        ImageFileNameVictory = new SimpleStringProperty("resources/theme"+themeID+"/Images/victory1.jpg");
         try {
             wallImage = new Image(new FileInputStream(ImageFileNameWall.get()));
             floorImage = new Image(new FileInputStream(imageFileNameFloor.get()));
@@ -52,16 +75,7 @@ public class MazeDisplayer extends Canvas {
         }
     }
 
-    public void setMaze(int[][] maze, int themeID) {
-        this.themeID = themeID;
-        this.maze = maze;
-        isVictory = false;
-        redrawAll();
-    }
 
-    public void setTheme(int themeID){
-        this.themeID = themeID;
-    }
 
     public void setSolution(int[][] solution){
         this.solution = solution;
