@@ -48,8 +48,8 @@
                 <MenuItem mnemonicParsing="false" onAction="#PropertiesStage" onMenuValidation="#PropertiesStage" text="Properties" />
                   <Menu mnemonicParsing="false" text="Theme">
                     <items>
-                      <MenuItem mnemonicParsing="false" onAction="#setTheme1" text="Theme1" />
-                        <MenuItem mnemonicParsing="false" onAction="#setTheme2" text="Theme2" />
+                      <MenuItem mnemonicParsing="false" onAction="#setTheme1" text="Mouse" />
+                        <MenuItem mnemonicParsing="false" onAction="#setTheme2" text="Eurovision" />
                     </items>
                   </Menu>
               </items>
