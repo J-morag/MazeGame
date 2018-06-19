@@ -116,11 +116,20 @@ public class MyViewController implements IView, Initializable{
 
     private void setMusic (int themeID){
         track1 = new Media(new File("resources/theme"+themeID+"/Sounds/track1.mp3").toURI().toString());
+        if (BGMisPlaying){
+            backgroundMusic.stop();
+        }
         backgroundMusic = new MediaPlayer(track1);
-        BGMisPlaying = false;
+        backgroundMusic.setVolume(getMasterVolume());
+        if (BGMisPlaying){
+            backgroundMusic.play();
+        }
         victoryMusic1 = new Media(new File("resources/theme"+themeID+"/Sounds/victory1.mp3").toURI().toString());
         victoryMusic = new MediaPlayer(victoryMusic1);
+        victoryMusic.setVolume(getMasterVolume()*victoryMusicVolumeMultiplier);
         ouch1 = new Media(new File("resources/theme"+themeID+"/Sounds/ouch1.wav").toURI().toString());
+        characterHurtSound = new MediaPlayer(ouch1);
+        characterHurtSound.setVolume(getMasterVolume()*characterHurtSoundVolumeMultiplier);
     }
 
     private void positionCharacter(){
